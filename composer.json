@@ -1,0 +1,17 @@
+{
+	"name": "damejidlo/newrelic",
+	"description": "",
+	"type": "library",
+	"require": {
+		"php": ">= 5.6.0",
+		"nette/utils": "2.3.*"
+	},
+	"require-dev": {
+		"nette/tester": "@dev"
+	},
+	"autoload": {
+		"psr-4": {
+			"Damejidlo\\NewRelic\\": "src/"
+		}
+	}
+}

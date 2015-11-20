@@ -1,6 +1,6 @@
 <?php
 
-namespace NewRelic;
+namespace Damejidlo\NewRelic;
 
 use Nette\Application;
 use Nette\Application\AbortException;

@@ -20,22 +20,22 @@ class NewRelicProfilingListener extends Object implements Subscriber
 	/**
 	 * @var Container
 	 */
-	private $container;
+	protected $container;
 
 	/**
 	 * @var Client
 	 */
-	private $client;
+	protected $client;
 
 	/**
 	 * @var string
 	 */
-	private $transactionName;
+	protected $transactionName;
 
 	/**
 	 * @var string
 	 */
-	private $appUrl;
+	protected $appUrl;
 
 
 

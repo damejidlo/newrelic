@@ -18,9 +18,32 @@ namespace Damejidlo\NewRelic {
 		FunctionMocks::assertCall(__NAMESPACE__ . "\\$name", $args);
 	}
 
+
+
 	function newrelic_add_custom_parameter()
 	{
 		FunctionMocks::assertCall(__FUNCTION__, func_get_args());
+	}
+
+
+	/**
+	 * @param string $name
+	 * @return bool
+	 */
+	function extension_loaded($name)
+	{
+		return $name === 'newrelic';
+	}
+
+	
+
+	/**
+	 * @param string $name
+	 * @return bool
+	 */
+	function function_exists($name)
+	{
+		return FunctionMocks::functionExists($name);
 	}
 
 }

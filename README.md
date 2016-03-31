@@ -1,19 +1,17 @@
+[![Downloads this Month](https://img.shields.io/packagist/dm/damejidlo/newrelic.svg)](https://packagist.org/packages/damejidlo/newrelic)
+[![Latest Stable Version](https://poser.pugx.org/damejidlo/newrelic/v/stable)](https://github.com/damejidlo/newrelic/releases)
+![](https://travis-ci.org/damejidlo/newrelic.svg?branch=master)
+![](https://scrutinizer-ci.com/g/damejidlo/newrelic/badges/quality-score.png?b=master)
+![](https://scrutinizer-ci.com/g/damejidlo/newrelic/badges/coverage.png?b=master)
+
 # Install
-## Composer
-```json
-{
-	"require": {
-		"damejidlo/newrelic": "@dev"
-	},
-  	"repositories": [
-		{"type": "git", "url": "git@github.com:damejidlo/newrelic.git"}
-	]
-}
+```
+composer require damejidlo/newrelic
 ```
 
-## Konfigurace v projektu
-1. Do `BasePresenter` dát: `use PresenterProfiler;`.
-2. Do `index.php` dát následující `$_ENV` nasatvení (bude to vypadat nějak takto):
+# Configure
+1. In your `BasePresenter` add `use PresenterProfiler;`.
+2. Into `index.php` put `$_ENV` settings (something like this):
 ```php
 <?php
 
@@ -25,5 +23,3 @@ $_ENV['COMPILATION_TIME_FLOAT'] = microtime(TRUE);
 
 $container->getByType('Nette\Application\Application')->run();
 ```
-
-

@@ -50,7 +50,7 @@ trait PresenterProfiler
 	 *
 	 * @param IContainer|NULL $parent
 	 * @param string|NULL $name
-	 * @return $this
+	 * @return static
 	 */
 	public function setParent(IContainer $parent = NULL, $name = NULL)
 	{

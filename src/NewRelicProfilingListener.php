@@ -76,8 +76,17 @@ class NewRelicProfilingListener extends Object implements Subscriber
 		$_ENV['APP_STARTUP_TIME_FLOAT'] = microtime(TRUE);
 		$this->client->disableAutorum();
 
-		$this->client->customTimeMetric('Nette/CompilationTime', $_ENV['COMPILATION_TIME_FLOAT'], $_ENV['REQUEST_TIME_FLOAT']);
-		$this->client->customTimeMetric('Nette/StartupTime', $_ENV['APP_STARTUP_TIME_FLOAT'], $_ENV['COMPILATION_TIME_FLOAT']);
+		$this->client->customTimeMetric(
+			'Nette/CompilationTime',
+			$_ENV['COMPILATION_TIME_FLOAT'],
+			$_ENV['REQUEST_TIME_FLOAT']
+		);
+		$this->client->customTimeMetric(
+			'Nette/StartupTime',
+			$_ENV['APP_STARTUP_TIME_FLOAT'],
+			$_ENV['COMPILATION_TIME_FLOAT']
+		);
+
 		$this->client->addCustomTracer('Nette\Application\Routers\RouteList::match');
 		$this->client->addCustomTracer('Nette\Application\UI\Presenter::createRequest');
 		$this->client->addCustomTracer('Nette\Application\UI\Presenter::run');
@@ -101,7 +110,9 @@ class NewRelicProfilingListener extends Object implements Subscriber
 
 		$_ENV['APP_REQUEST_TIME_FLOAT'] = microtime(TRUE);
 		$this->client->customTimeMetric(
-			'Nette/RequestTime', $_ENV['APP_REQUEST_TIME_FLOAT'], $_ENV['APP_STARTUP_TIME_FLOAT']
+			'Nette/RequestTime',
+			$_ENV['APP_REQUEST_TIME_FLOAT'],
+			$_ENV['APP_STARTUP_TIME_FLOAT']
 		);
 
 		if (PHP_SAPI === 'cli') {
@@ -120,9 +131,21 @@ class NewRelicProfilingListener extends Object implements Subscriber
 			$this->client->nameTransaction($this->transactionName);
 		}
 
-		$this->client->customTimeMetric('Nette/RequestTime', $_ENV['APP_REQUEST_TIME_FLOAT'], $_ENV['APP_STARTUP_TIME_FLOAT']);
-		$this->client->customTimeMetric('Nette/CompilationTime', $_ENV['COMPILATION_TIME_FLOAT'], $_ENV['REQUEST_TIME_FLOAT']);
-		$this->client->customTimeMetric('Nette/StartupTime', $_ENV['APP_STARTUP_TIME_FLOAT'], $_ENV['COMPILATION_TIME_FLOAT']);
+		$this->client->customTimeMetric(
+			'Nette/RequestTime',
+			$_ENV['APP_REQUEST_TIME_FLOAT'],
+			$_ENV['APP_STARTUP_TIME_FLOAT']
+		);
+		$this->client->customTimeMetric(
+			'Nette/CompilationTime',
+			$_ENV['COMPILATION_TIME_FLOAT'],
+			$_ENV['REQUEST_TIME_FLOAT']
+		);
+		$this->client->customTimeMetric(
+			'Nette/StartupTime',
+			$_ENV['APP_STARTUP_TIME_FLOAT'],
+			$_ENV['COMPILATION_TIME_FLOAT']
+		);
 	}
 
 
@@ -134,20 +157,60 @@ class NewRelicProfilingListener extends Object implements Subscriber
 	public function onResponse(Application $app, IResponse $response)
 	{
 		$_ENV['APP_RESPONSE_TIME_FLOAT'] = microtime(TRUE);
-		$this->client->customTimeMetric('Nette/ResponseTime', $_ENV['APP_RESPONSE_TIME_FLOAT'], $_ENV['APP_REQUEST_TIME_FLOAT']);
+		$this->client->customTimeMetric(
+			'Nette/ResponseTime',
+			$_ENV['APP_RESPONSE_TIME_FLOAT'],
+			$_ENV['APP_REQUEST_TIME_FLOAT']
+		);
 
 		if (($presenter = $app->getPresenter()) && $presenter instanceof Presenter) {
 			$module = $this->getModule($presenter->getName());
 
-			$this->client->customTimeMetric("Presenter/{$module}/Shutdown", $_ENV['APP_PRESENTER_LEAVE'], $_ENV['APP_PRESENTER_SEND_RESPONSE']);
-			$this->client->customTimeMetric("Presenter/{$module}/InitGlobals", $_ENV['APP_PRESENTER_REQUIREMENTS_BEGIN'], $_ENV['APP_PRESENTER_BEFORE_INIT']);
-			$this->client->customTimeMetric("Presenter/{$module}/Startup", $_ENV['APP_PRESENTER_STARTUP_END'], $_ENV['APP_PRESENTER_REQUIREMENTS_BEGIN']);
-			$this->client->customTimeMetric("Presenter/{$module}/Action", $_ENV['APP_PRESENTER_ACTION_END'], $_ENV['APP_PRESENTER_ACTION_BEGIN']);
-			$this->client->customTimeMetric("Presenter/{$module}/Render", $_ENV['APP_PRESENTER_RENDER_END'], $_ENV['APP_PRESENTER_RENDER_BEGIN']);
-			$this->client->customTimeMetric("Presenter/{$module}/BeforeRender", $_ENV['APP_PRESENTER_RENDER_BEGIN'], $_ENV['APP_PRESENTER_ACTION_END']);
-			$this->client->customTimeMetric("Presenter/{$module}/ProcessSignal", $_ENV['APP_PRESENTER_SIGNAL_END'], $_ENV['APP_PRESENTER_SIGNAL_BEGIN']);
-			$this->client->customTimeMetric("Presenter/{$module}/AfterRender", $_ENV['APP_PRESENTER_AFTER_RENDER_END'], $_ENV['APP_PRESENTER_RENDER_END']);
-			$this->client->customTimeMetric("Presenter/{$module}/SendTemplate", $_ENV['APP_PRESENTER_SEND_TEMPLATE_END'], $_ENV['APP_PRESENTER_SEND_TEMPLATE_BEGIN']);
+			$this->client->customTimeMetric(
+				"Presenter/{$module}/Shutdown",
+				$_ENV['APP_PRESENTER_LEAVE'],
+				$_ENV['APP_PRESENTER_SEND_RESPONSE']
+			);
+			$this->client->customTimeMetric(
+				"Presenter/{$module}/InitGlobals",
+				$_ENV['APP_PRESENTER_REQUIREMENTS_BEGIN'],
+				$_ENV['APP_PRESENTER_BEFORE_INIT']
+			);
+			$this->client->customTimeMetric(
+				"Presenter/{$module}/Startup",
+				$_ENV['APP_PRESENTER_STARTUP_END'],
+				$_ENV['APP_PRESENTER_REQUIREMENTS_BEGIN']
+			);
+			$this->client->customTimeMetric(
+				"Presenter/{$module}/Action",
+				$_ENV['APP_PRESENTER_ACTION_END'],
+				$_ENV['APP_PRESENTER_ACTION_BEGIN']
+			);
+			$this->client->customTimeMetric(
+				"Presenter/{$module}/Render",
+				$_ENV['APP_PRESENTER_RENDER_END'],
+				$_ENV['APP_PRESENTER_RENDER_BEGIN']
+			);
+			$this->client->customTimeMetric(
+				"Presenter/{$module}/BeforeRender",
+				$_ENV['APP_PRESENTER_RENDER_BEGIN'],
+				$_ENV['APP_PRESENTER_ACTION_END']
+			);
+			$this->client->customTimeMetric(
+				"Presenter/{$module}/ProcessSignal",
+				$_ENV['APP_PRESENTER_SIGNAL_END'],
+				$_ENV['APP_PRESENTER_SIGNAL_BEGIN']
+			);
+			$this->client->customTimeMetric(
+				"Presenter/{$module}/AfterRender",
+				$_ENV['APP_PRESENTER_AFTER_RENDER_END'],
+				$_ENV['APP_PRESENTER_RENDER_END']
+			);
+			$this->client->customTimeMetric(
+				"Presenter/{$module}/SendTemplate",
+				$_ENV['APP_PRESENTER_SEND_TEMPLATE_END'],
+				$_ENV['APP_PRESENTER_SEND_TEMPLATE_BEGIN']
+			);
 		}
 	}
 
@@ -159,11 +222,22 @@ class NewRelicProfilingListener extends Object implements Subscriber
 	public function onShutdown(Application $app)
 	{
 		$_ENV['APP_SHUTDOWN_TIME_FLOAT'] = microtime(TRUE);
-		$this->client->customTimeMetric('Nette/ResponseSendingTime', $_ENV['APP_SHUTDOWN_TIME_FLOAT'], $_ENV['APP_RESPONSE_TIME_FLOAT']);
+		$this->client->customTimeMetric(
+			'Nette/ResponseSendingTime',
+			$_ENV['APP_SHUTDOWN_TIME_FLOAT'],
+			$_ENV['APP_RESPONSE_TIME_FLOAT']
+		);
 
 		if (function_exists("apc_cache_info")) {
 			$apcInfo = apc_cache_info('user', TRUE);
-			if (isset($apcInfo['nslots'], $apcInfo['nmisses'], $apcInfo['ninserts'], $apcInfo['nentries'], $apcInfo['nexpunges'], $apcInfo['nhits'])) {
+			if (isset(
+				$apcInfo['nslots'],
+				$apcInfo['nmisses'],
+				$apcInfo['ninserts'],
+				$apcInfo['nentries'],
+				$apcInfo['nexpunges'],
+				$apcInfo['nhits']
+			)) {
 				$this->client->customMetric('Apc/Slots', $apcInfo['nslots']);
 				$this->client->customMetric('Apc/Misses', $apcInfo['nmisses']);
 				$this->client->customMetric('Apc/Inserts', $apcInfo['ninserts']);

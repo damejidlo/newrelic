@@ -3,25 +3,11 @@ language: php
 php:
   - 5.6
 
-env:
-  - secure: N0Qsz1aXQ5IWje3yVod0VvFBKi6NcVphSYZrmQcMaX+PMZIXagqiQXB+ggHlWF0buLQboFfPukfG9IKSzKZfjewMvyNyt3+GUg/yU1jx8TazCabFMf9wxtc3iKiD3DgLPlkmSHy1Uz1TOfdr1dxq3AhjY6dxZqnvdflweY2jeysqUX0RfF7SJa5EVnXW0HN7ky915/YScvDibgg9LGbUmxprubheDViXVDGKhb61B/yhCrKIUhV/tUqIolb4N5hpOtb+K9bz1Tc4H0trFxIWQdGUI9zpe/mweZHvEhYFIOguQthTw1MED1X1TPP3ds5dWnIXppX0ProYmvrZNEkugg==
-
-install:
-  - time ./tests/.travis.newrelic.sh
-  - composer self-update || echo "failed :("
-  - time composer install --no-interaction --optimize-autoloader
-
 before_script:
-  - phpenv config-add ./tests/php.ini
-  - ./vendor/bin/tester -c ./tests/php.ini --info
+  - composer self-update || echo "[ERROR] update-composer failed!"
+  - composer install --no-interaction --optimize-autoloader
 
 script:
-  - ./vendor/bin/tester -s -j 32 -c ./tests/php.ini ./tests
-
-after_failure:
-  - 'for i in $(find ./log -name \*.log); do echo "--- $i"; cat $i; echo; echo; done'
-  - 'for i in $(find ./tests -name \*.log); do echo "--- $i"; cat $i; echo; echo; done'
-  - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
-
-notifications:
-  email: false
+  - ./vendor/bin/tester -s -j 32 -c ./tests/php.ini ./tests --coverage coverage.xml --coverage-src src
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.xml

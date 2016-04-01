@@ -115,21 +115,7 @@ class NewRelicProfilingListener extends Object implements Subscriber
 			$_ENV['APP_STARTUP_TIME_FLOAT']
 		);
 
-		if (PHP_SAPI === 'cli') {
-			$this->client->setAppname("{$this->appUrl}/Cron");
-			$this->client->nameTransaction($this->resolveCliTransactionName());
-			$this->client->backgroundJob(TRUE);
-
-		} else {
-			$module = $this->getModule($request->getPresenterName());
-			$this->client->setAppname($this->appUrl . ($module ? "/{$module}" : ''));
-			if ($module === 'Cron') {
-				$this->client->backgroundJob(TRUE);
-			}
-			$params = $request->getParameters() + $request->getPost();
-			$this->transactionName = $this->resolveTransactionName($request, $params);
-			$this->client->nameTransaction($this->transactionName);
-		}
+		$this->handleRequest($request);
 
 		$this->client->customTimeMetric(
 			'Nette/RequestTime',
@@ -271,7 +257,7 @@ class NewRelicProfilingListener extends Object implements Subscriber
 	/**
 	 * @return string
 	 */
-	private function resolveCliTransactionName()
+	protected function resolveCliTransactionName()
 	{
 		return '$ ' . basename($_SERVER['argv'][0]) . ' ' . implode(' ', array_slice($_SERVER['argv'], 1));
 	}
@@ -283,7 +269,7 @@ class NewRelicProfilingListener extends Object implements Subscriber
 	 * @param string[] $params
 	 * @return string
 	 */
-	private function resolveTransactionName(Request $request, $params)
+	protected function resolveTransactionName(Request $request, $params)
 	{
 		return (
 			$request->getPresenterName()
@@ -297,12 +283,52 @@ class NewRelicProfilingListener extends Object implements Subscriber
 	/**
 	 * @param array $params
 	 */
-	private function setCustomParametersToClient(array $params)
+	protected function setCustomParametersToClient(array $params)
 	{
 		foreach ($params as $name => $value) {
 			if (is_scalar($value)) {
 				$this->client->addCustomParameter($name, $value);
 			}
+		}
+	}
+
+
+
+	protected function handleCliRequest()
+	{
+		$this->client->setAppname("{$this->appUrl}/Cron");
+		$this->client->nameTransaction($this->resolveCliTransactionName());
+		$this->client->backgroundJob(TRUE);
+	}
+
+
+
+	/**
+	 * @param Request $request
+	 */
+	protected function handleWebRequest(Request $request)
+	{
+		$module = $this->getModule($request->getPresenterName());
+		$this->client->setAppname($this->appUrl . ($module ? "/{$module}" : ''));
+		if ($module === 'Cron') {
+			$this->client->backgroundJob(TRUE);
+		}
+		$params = $request->getParameters() + $request->getPost();
+		$this->transactionName = $this->resolveTransactionName($request, $params);
+		$this->client->nameTransaction($this->transactionName);
+	}
+
+
+
+	/**
+	 * @param Request $request
+	 */
+	protected function handleRequest(Request $request)
+	{
+		if (PHP_SAPI === 'cli') {
+			$this->handleCliRequest();
+		} else {
+			$this->handleWebRequest($request);
 		}
 	}
 

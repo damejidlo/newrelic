@@ -97,6 +97,17 @@ class FunctionMocks extends Object
 
 	/**
 	 * @param string $name
+	 * @return bool
+	 */
+	public static function functionExists($name)
+	{
+		return isset(self::$expected[self::getFullFunctionName($name)]);
+	}
+
+
+
+	/**
+	 * @param string $name
 	 * @return string
 	 */
 	protected static function getFullFunctionName($name)

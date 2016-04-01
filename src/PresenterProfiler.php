@@ -16,6 +16,9 @@ use Nette\Utils\Strings;
 trait PresenterProfiler
 {
 
+	/**
+	 * @var int[]
+	 */
 	private $methodCalls = [
 		'loadState' => 0,
 		'saveGlobalState' => 0,
@@ -50,7 +53,7 @@ trait PresenterProfiler
 	 *
 	 * @param IContainer|NULL $parent
 	 * @param string|NULL $name
-	 * @return $this
+	 * @return static
 	 */
 	public function setParent(IContainer $parent = NULL, $name = NULL)
 	{
@@ -72,12 +75,23 @@ trait PresenterProfiler
 	 */
 	public function loadState(array $params)
 	{
-		$this->methodCalls['loadState'] += 1;
-
 		parent::loadState($params);
 
-		if (count($this->methodCalls['loadState']) === 1) {
-			$_ENV['APP_PRESENTER_REQUIREMENTS_BEGIN'] = microtime(TRUE);
+		$this->methodCalled('loadState', 'APP_PRESENTER_REQUIREMENTS_BEGIN');
+	}
+
+
+
+	/**
+	 * @param string $method
+	 * @param string $envKey
+	 */
+	private function methodCalled($method, $envKey)
+	{
+		$this->methodCalls[$method] += 1;
+
+		if (count($this->methodCalls[$method]) === 1) {
+			$_ENV[$envKey] = microtime(TRUE);
 		}
 	}
 
@@ -97,11 +111,14 @@ trait PresenterProfiler
 	 */
 	protected function tryCall($method, array $params)
 	{
-		if ($isAction = Strings::startsWith($method, 'action')) {
+		$isAction = Strings::startsWith($method, 'action');
+		$isRender = Strings::startsWith($method, 'render');
+
+		if ($isAction) {
 			$_ENV['APP_PRESENTER_STARTUP_END'] = microtime(TRUE);
 			$_ENV['APP_PRESENTER_ACTION_BEGIN'] = microtime(TRUE);
 
-		} elseif ($isRender = Strings::startsWith($method, 'render')) {
+		} elseif ($isRender) {
 			$_ENV['APP_PRESENTER_RENDER_BEGIN'] = microtime(TRUE);
 		}
 
@@ -112,7 +129,7 @@ trait PresenterProfiler
 			if ($isAction) {
 				$_ENV['APP_PRESENTER_ACTION_END'] = microtime(TRUE);
 
-			} elseif (!empty($isRender)) {
+			} elseif ($isRender) {
 				$_ENV['APP_PRESENTER_RENDER_END'] = microtime(TRUE);
 			}
 		}
@@ -144,11 +161,7 @@ trait PresenterProfiler
 	 */
 	protected function saveGlobalState()
 	{
-		$this->methodCalls['saveGlobalState'] += 1;
-
-		if (count($this->methodCalls['saveGlobalState']) === 1) {
-			$_ENV['APP_PRESENTER_AFTER_RENDER_END'] = microtime(TRUE);
-		}
+		$this->methodCalled('saveGlobalState', 'APP_PRESENTER_AFTER_RENDER_END');
 
 		parent::saveGlobalState();
 	}

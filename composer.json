@@ -1,5 +1,6 @@
 {
 	"name": "damejidlo/newrelic",
+	"license": "MIT",
 	"description": "",
 	"type": "library",
 	"require": {

@@ -6,7 +6,7 @@
 	"require": {
 		"php": ">= 5.6.0",
 		"nette/utils": ">= 2.3",
-		"nette/application": ">= 2.3.*",
+		"nette/application": ">= 2.3",
 		"kdyby/events": ">= 2.4"
 	},
 	"require-dev": {

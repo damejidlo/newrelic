@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace Damejidlo\NewRelic;
 
-
 use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
 use Nette\Application\IResponse;

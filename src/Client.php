@@ -2,7 +2,7 @@
 
 namespace Damejidlo\NewRelic;
 
-use Nette\Object;
+use Nette\SmartObject;
 
 
 
@@ -24,8 +24,10 @@ use Nette\Object;
  * @method disableAutorum()
  * @method setUserAttributes($user, $account, $product)
  */
-class Client extends Object
+class Client
 {
+
+	use SmartObject;
 
 	/**
 	 * @param string $name

@@ -9,13 +9,15 @@ use Nette\Application\IResponse;
 use Nette\Application\Request;
 use Nette\Application\UI\Presenter;
 use Nette\DI\Container;
-use Nette\Object;
+use Nette\SmartObject;
 use Nette\Utils\Strings;
 
 
 
-class NewRelicProfilingListener extends Object implements Subscriber
+class NewRelicProfilingListener implements Subscriber
 {
+
+	use SmartObject;
 
 	/**
 	 * @var Container

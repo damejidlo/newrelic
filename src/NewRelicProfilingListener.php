@@ -2,14 +2,14 @@
 
 namespace Damejidlo\NewRelic;
 
+use Exception;
 use Kdyby\Events\Subscriber;
 use Nette\Application\Application;
 use Nette\Application\UI\Presenter;
-use Nette\DI\Container;
-use Nette\Object;
 use Nette\Application\IResponse;
 use Nette\Application\Request;
-use Exception;
+use Nette\DI\Container;
+use Nette\Object;
 use Nette\Utils\Strings;
 
 

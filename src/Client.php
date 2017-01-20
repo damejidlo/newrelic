@@ -27,7 +27,9 @@ use Nette\SmartObject;
 class Client
 {
 
-	use SmartObject;
+	use SmartObject {
+		__call as traitCall;
+	}
 
 	/**
 	 * @param string $name
@@ -70,7 +72,7 @@ class Client
 		}
 
 		if (!function_exists($function)) {
-			return parent::__call($name, $args);
+			return $this->traitCall($name, $args);
 		}
 
 		return call_user_func_array($function, $args);

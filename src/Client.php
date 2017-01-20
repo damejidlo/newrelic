@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Damejidlo\NewRelic;
 
@@ -35,7 +36,7 @@ class Client
 	 * @param string $name
 	 * @param string $value
 	 */
-	public function customMetric($name, $value)
+	public function customMetric(string $name, string $value)
 	{
 		$this->__call(__FUNCTION__, ['Custom/' . $name, $value]);
 	}
@@ -44,16 +45,16 @@ class Client
 
 	/**
 	 * @param string $name
-	 * @param int $second
-	 * @param int $first
+	 * @param string $second
+	 * @param string $first
 	 */
-	public function customTimeMetric($name, &$second, &$first)
+	public function customTimeMetric(string $name, string &$second, string &$first)
 	{
 		if (empty($second) || empty($first)) {
 			return;
 		}
 
-		$this->customMetric($name, round(abs($second - $first) * 1000, 0));
+		$this->customMetric($name, (string) round(abs($second - $first) * 1000, 0));
 	}
 
 
@@ -63,7 +64,7 @@ class Client
 	 * @param array $args
 	 * @return mixed
 	 */
-	public function __call($name, $args)
+	public function __call(string $name, array $args)
 	{
 		$function = 'newrelic_' . self::convertCamelCaseToUnderscore($name);
 
@@ -86,7 +87,7 @@ class Client
 	 * @param string $text
 	 * @return string
 	 */
-	private static function convertCamelCaseToUnderscore($text)
+	private static function convertCamelCaseToUnderscore(string $text) : string
 	{
 		$text = preg_replace('#(.)(?=[A-Z])#', '$1_', $text);
 		$text = strtolower($text);

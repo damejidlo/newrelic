@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Damejidlo\NewRelic;
 
@@ -46,7 +47,7 @@ class NewRelicProfilingListener implements Subscriber
 	 * @param Container $container
 	 * @param Client $client
 	 */
-	public function __construct($appUrl, Container $container, Client $client)
+	public function __construct(string $appUrl, Container $container, Client $client)
 	{
 		$this->appUrl = $appUrl;
 		$this->container = $container;
@@ -56,9 +57,9 @@ class NewRelicProfilingListener implements Subscriber
 
 
 	/**
-	 * @return string[]
+	 * @inheritdoc
 	 */
-	public function getSubscribedEvents()
+	public function getSubscribedEvents() : array
 	{
 		return [
 			'Nette\\Application\\Application::onStartup',
@@ -225,7 +226,7 @@ class NewRelicProfilingListener implements Subscriber
 	 * @param string $presenterName
 	 * @return string
 	 */
-	protected function getModule($presenterName)
+	protected function getModule(string $presenterName) : string
 	{
 		$modules = explode(':', Strings::trim($presenterName, ':'));
 		$module = reset($modules) ?: '';
@@ -239,7 +240,7 @@ class NewRelicProfilingListener implements Subscriber
 	/**
 	 * @return string
 	 */
-	protected function resolveCliTransactionName()
+	protected function resolveCliTransactionName() : string
 	{
 		return '$ ' . basename($_SERVER['argv'][0]) . ' ' . implode(' ', array_slice($_SERVER['argv'], 1));
 	}
@@ -251,7 +252,7 @@ class NewRelicProfilingListener implements Subscriber
 	 * @param string[] $params
 	 * @return string
 	 */
-	protected function resolveTransactionName(Request $request, $params)
+	protected function resolveTransactionName(Request $request, array $params) : string
 	{
 		return (
 			$request->getPresenterName()

@@ -2,7 +2,6 @@
 
 namespace Damejidlo\NewRelic;
 
-use Nette\Application;
 use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
 use Nette\Application\IResponse;

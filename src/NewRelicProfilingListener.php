@@ -217,28 +217,6 @@ class NewRelicProfilingListener implements Subscriber
 			$_ENV['APP_SHUTDOWN_TIME_FLOAT'],
 			$_ENV['APP_RESPONSE_TIME_FLOAT']
 		);
-
-		if (function_exists("apc_cache_info")) {
-			$apcInfo = apc_cache_info('user', TRUE);
-			if (isset(
-				$apcInfo['nslots'],
-				$apcInfo['nmisses'],
-				$apcInfo['ninserts'],
-				$apcInfo['nentries'],
-				$apcInfo['nexpunges'],
-				$apcInfo['nhits']
-			)) {
-				$this->client->customMetric('Apc/Slots', $apcInfo['nslots']);
-				$this->client->customMetric('Apc/Misses', $apcInfo['nmisses']);
-				$this->client->customMetric('Apc/Inserts', $apcInfo['ninserts']);
-				$this->client->customMetric('Apc/Entries', $apcInfo['nentries']);
-				$this->client->customMetric('Apc/Expunges', $apcInfo['nexpunges']);
-				$this->client->customMetric('Apc_Total/Hits', $apcInfo['nhits']);
-			}
-			if (isset($apcInfo['mem_size'])) {
-				$this->client->customMetric('Apc_Total/Memory_Usage', $apcInfo['mem_size'] / 1024);
-			}
-		}
 	}
 
 

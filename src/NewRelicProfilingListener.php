@@ -149,7 +149,9 @@ class NewRelicProfilingListener extends Object implements Subscriber
 			$_ENV['APP_REQUEST_TIME_FLOAT']
 		);
 
-		if (($presenter = $app->getPresenter()) && $presenter instanceof Presenter) {
+		$presenter = $app->getPresenter();
+
+		if ($presenter && $presenter instanceof Presenter) {
 			$module = $this->getModule($presenter->getName());
 
 			$this->client->customTimeMetric(

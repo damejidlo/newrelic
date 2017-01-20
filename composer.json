@@ -10,7 +10,8 @@
 		"kdyby/events": "~3.0"
 	},
 	"require-dev": {
-		"nette/tester": "@dev"
+		"nette/tester": "@dev",
+		"damejidlo/coding-standard": "^0.5.0"
 	},
 	"autoload": {
 		"psr-4": {

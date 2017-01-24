@@ -45,10 +45,10 @@ class Client
 
 	/**
 	 * @param string $name
-	 * @param string $second
-	 * @param string $first
+	 * @param float $second
+	 * @param float $first
 	 */
-	public function customTimeMetric(string $name, string &$second, string &$first)
+	public function customTimeMetric(string $name, float $second, float $first)
 	{
 		if (empty($second) || empty($first)) {
 			return;

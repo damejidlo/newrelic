@@ -1,8 +1,9 @@
 <?php
+declare(strict_types = 1);
 
 namespace Damejidlo\NewRelic;
 
-use Nette\Object;
+use Nette\SmartObject;
 
 
 
@@ -24,14 +25,18 @@ use Nette\Object;
  * @method disableAutorum()
  * @method setUserAttributes($user, $account, $product)
  */
-class Client extends Object
+class Client
 {
+
+	use SmartObject {
+		__call as traitCall;
+	}
 
 	/**
 	 * @param string $name
 	 * @param string $value
 	 */
-	public function customMetric($name, $value)
+	public function customMetric(string $name, string $value)
 	{
 		$this->__call(__FUNCTION__, ['Custom/' . $name, $value]);
 	}
@@ -40,16 +45,16 @@ class Client extends Object
 
 	/**
 	 * @param string $name
-	 * @param int $second
-	 * @param int $first
+	 * @param float $second
+	 * @param float $first
 	 */
-	public function customTimeMetric($name, &$second, &$first)
+	public function customTimeMetric(string $name, float $second, float $first)
 	{
 		if (empty($second) || empty($first)) {
 			return;
 		}
 
-		$this->customMetric($name, round(abs($second - $first) * 1000, 0));
+		$this->customMetric($name, (string) round(abs($second - $first) * 1000, 0));
 	}
 
 
@@ -59,7 +64,7 @@ class Client extends Object
 	 * @param array $args
 	 * @return mixed
 	 */
-	public function __call($name, $args)
+	public function __call(string $name, array $args)
 	{
 		$function = 'newrelic_' . self::convertCamelCaseToUnderscore($name);
 
@@ -68,7 +73,7 @@ class Client extends Object
 		}
 
 		if (!function_exists($function)) {
-			return parent::__call($name, $args);
+			return $this->traitCall($name, $args);
 		}
 
 		return call_user_func_array($function, $args);
@@ -82,7 +87,7 @@ class Client extends Object
 	 * @param string $text
 	 * @return string
 	 */
-	private static function convertCamelCaseToUnderscore($text)
+	private static function convertCamelCaseToUnderscore(string $text) : string
 	{
 		$text = preg_replace('#(.)(?=[A-Z])#', '$1_', $text);
 		$text = strtolower($text);

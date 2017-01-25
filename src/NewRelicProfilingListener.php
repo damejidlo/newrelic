@@ -1,21 +1,24 @@
 <?php
+declare(strict_types = 1);
 
 namespace Damejidlo\NewRelic;
 
+use Exception;
 use Kdyby\Events\Subscriber;
 use Nette\Application\Application;
-use Nette\Application\UI\Presenter;
-use Nette\DI\Container;
-use Nette\Object;
 use Nette\Application\IResponse;
 use Nette\Application\Request;
-use Exception;
+use Nette\Application\UI\Presenter;
+use Nette\DI\Container;
+use Nette\SmartObject;
 use Nette\Utils\Strings;
 
 
 
-class NewRelicProfilingListener extends Object implements Subscriber
+class NewRelicProfilingListener implements Subscriber
 {
+
+	use SmartObject;
 
 	/**
 	 * @var Container
@@ -44,7 +47,7 @@ class NewRelicProfilingListener extends Object implements Subscriber
 	 * @param Container $container
 	 * @param Client $client
 	 */
-	public function __construct($appUrl, Container $container, Client $client)
+	public function __construct(string $appUrl, Container $container, Client $client)
 	{
 		$this->appUrl = $appUrl;
 		$this->container = $container;
@@ -54,9 +57,9 @@ class NewRelicProfilingListener extends Object implements Subscriber
 
 
 	/**
-	 * @return string[]
+	 * @inheritdoc
 	 */
-	public function getSubscribedEvents()
+	public function getSubscribedEvents() : array
 	{
 		return [
 			'Nette\\Application\\Application::onStartup',
@@ -149,7 +152,9 @@ class NewRelicProfilingListener extends Object implements Subscriber
 			$_ENV['APP_REQUEST_TIME_FLOAT']
 		);
 
-		if (($presenter = $app->getPresenter()) && $presenter instanceof Presenter) {
+		$presenter = $app->getPresenter();
+
+		if ($presenter && $presenter instanceof Presenter) {
 			$module = $this->getModule($presenter->getName());
 
 			$this->client->customTimeMetric(
@@ -213,28 +218,6 @@ class NewRelicProfilingListener extends Object implements Subscriber
 			$_ENV['APP_SHUTDOWN_TIME_FLOAT'],
 			$_ENV['APP_RESPONSE_TIME_FLOAT']
 		);
-
-		if (function_exists("apc_cache_info")) {
-			$apcInfo = apc_cache_info('user', TRUE);
-			if (isset(
-				$apcInfo['nslots'],
-				$apcInfo['nmisses'],
-				$apcInfo['ninserts'],
-				$apcInfo['nentries'],
-				$apcInfo['nexpunges'],
-				$apcInfo['nhits']
-			)) {
-				$this->client->customMetric('Apc/Slots', $apcInfo['nslots']);
-				$this->client->customMetric('Apc/Misses', $apcInfo['nmisses']);
-				$this->client->customMetric('Apc/Inserts', $apcInfo['ninserts']);
-				$this->client->customMetric('Apc/Entries', $apcInfo['nentries']);
-				$this->client->customMetric('Apc/Expunges', $apcInfo['nexpunges']);
-				$this->client->customMetric('Apc_Total/Hits', $apcInfo['nhits']);
-			}
-			if (isset($apcInfo['mem_size'])) {
-				$this->client->customMetric('Apc_Total/Memory_Usage', $apcInfo['mem_size'] / 1024);
-			}
-		}
 	}
 
 
@@ -243,7 +226,7 @@ class NewRelicProfilingListener extends Object implements Subscriber
 	 * @param string $presenterName
 	 * @return string
 	 */
-	protected function getModule($presenterName)
+	protected function getModule(string $presenterName) : string
 	{
 		$modules = explode(':', Strings::trim($presenterName, ':'));
 		$module = reset($modules) ?: '';
@@ -257,7 +240,7 @@ class NewRelicProfilingListener extends Object implements Subscriber
 	/**
 	 * @return string
 	 */
-	protected function resolveCliTransactionName()
+	protected function resolveCliTransactionName() : string
 	{
 		return '$ ' . basename($_SERVER['argv'][0]) . ' ' . implode(' ', array_slice($_SERVER['argv'], 1));
 	}
@@ -269,7 +252,7 @@ class NewRelicProfilingListener extends Object implements Subscriber
 	 * @param string[] $params
 	 * @return string
 	 */
-	protected function resolveTransactionName(Request $request, $params)
+	protected function resolveTransactionName(Request $request, array $params) : string
 	{
 		return (
 			$request->getPresenterName()

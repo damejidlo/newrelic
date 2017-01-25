@@ -1,8 +1,8 @@
 <?php
+declare(strict_types = 1);
 
 namespace Damejidlo\NewRelic;
 
-use Nette\Application;
 use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
 use Nette\Application\IResponse;
@@ -55,7 +55,7 @@ trait PresenterProfiler
 	 * @param string|NULL $name
 	 * @return static
 	 */
-	public function setParent(IContainer $parent = NULL, $name = NULL)
+	public function setParent(IContainer $parent = NULL, string $name = NULL)
 	{
 		parent::setParent($parent, $name);
 
@@ -86,7 +86,7 @@ trait PresenterProfiler
 	 * @param string $method
 	 * @param string $envKey
 	 */
-	private function methodCalled($method, $envKey)
+	private function methodCalled(string $method, string $envKey)
 	{
 		$this->methodCalls[$method] += 1;
 
@@ -109,7 +109,7 @@ trait PresenterProfiler
 	 * @param array $params
 	 * @return bool
 	 */
-	protected function tryCall($method, array $params)
+	protected function tryCall(string $method, array $params) : bool
 	{
 		$isAction = Strings::startsWith($method, 'action');
 		$isRender = Strings::startsWith($method, 'render');

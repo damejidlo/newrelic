@@ -79,15 +79,15 @@ class NewRelicProfilingListener implements Subscriber
 		$_ENV['APP_STARTUP_TIME_FLOAT'] = microtime(TRUE);
 		$this->client->disableAutorum();
 
-		$this->client->customTimeMetric(
+		$this->client->customTimeMetricFromEnv(
 			'Nette/CompilationTime',
-			$_ENV['COMPILATION_TIME_FLOAT'],
-			$_ENV['REQUEST_TIME_FLOAT']
+			'COMPILATION_TIME_FLOAT',
+			'REQUEST_TIME_FLOAT'
 		);
-		$this->client->customTimeMetric(
+		$this->client->customTimeMetricFromEnv(
 			'Nette/StartupTime',
-			$_ENV['APP_STARTUP_TIME_FLOAT'],
-			$_ENV['COMPILATION_TIME_FLOAT']
+			'APP_STARTUP_TIME_FLOAT',
+			'COMPILATION_TIME_FLOAT'
 		);
 
 		$this->client->addCustomTracer('Nette\Application\Routers\RouteList::match');
@@ -112,28 +112,28 @@ class NewRelicProfilingListener implements Subscriber
 		$this->setCustomParametersToClient($request->getParameters());
 
 		$_ENV['APP_REQUEST_TIME_FLOAT'] = microtime(TRUE);
-		$this->client->customTimeMetric(
+		$this->client->customTimeMetricFromEnv(
 			'Nette/RequestTime',
-			$_ENV['APP_REQUEST_TIME_FLOAT'],
-			$_ENV['APP_STARTUP_TIME_FLOAT']
+			'APP_REQUEST_TIME_FLOAT',
+			'APP_STARTUP_TIME_FLOAT'
 		);
 
 		$this->handleRequest($request);
 
-		$this->client->customTimeMetric(
+		$this->client->customTimeMetricFromEnv(
 			'Nette/RequestTime',
-			$_ENV['APP_REQUEST_TIME_FLOAT'],
-			$_ENV['APP_STARTUP_TIME_FLOAT']
+			'APP_REQUEST_TIME_FLOAT',
+			'APP_STARTUP_TIME_FLOAT'
 		);
-		$this->client->customTimeMetric(
+		$this->client->customTimeMetricFromEnv(
 			'Nette/CompilationTime',
-			$_ENV['COMPILATION_TIME_FLOAT'],
-			$_ENV['REQUEST_TIME_FLOAT']
+			'COMPILATION_TIME_FLOAT',
+			'REQUEST_TIME_FLOAT'
 		);
-		$this->client->customTimeMetric(
+		$this->client->customTimeMetricFromEnv(
 			'Nette/StartupTime',
-			$_ENV['APP_STARTUP_TIME_FLOAT'],
-			$_ENV['COMPILATION_TIME_FLOAT']
+			'APP_STARTUP_TIME_FLOAT',
+			'COMPILATION_TIME_FLOAT'
 		);
 	}
 
@@ -146,10 +146,10 @@ class NewRelicProfilingListener implements Subscriber
 	public function onResponse(Application $app, IResponse $response)
 	{
 		$_ENV['APP_RESPONSE_TIME_FLOAT'] = microtime(TRUE);
-		$this->client->customTimeMetric(
+		$this->client->customTimeMetricFromEnv(
 			'Nette/ResponseTime',
-			$_ENV['APP_RESPONSE_TIME_FLOAT'],
-			$_ENV['APP_REQUEST_TIME_FLOAT']
+			'APP_RESPONSE_TIME_FLOAT',
+			'APP_REQUEST_TIME_FLOAT'
 		);
 
 		$presenter = $app->getPresenter();
@@ -157,54 +157,52 @@ class NewRelicProfilingListener implements Subscriber
 		if ($presenter && $presenter instanceof Presenter) {
 			$module = $this->getModule($presenter->getName());
 
-			$this->client->customTimeMetric(
+			$this->client->customTimeMetricFromEnv(
 				"Presenter/{$module}/Shutdown",
-				$_ENV['APP_PRESENTER_LEAVE'],
-				$_ENV['APP_PRESENTER_SEND_RESPONSE']
+				'APP_PRESENTER_LEAVE',
+				'APP_PRESENTER_SEND_RESPONSE'
 			);
-			$this->client->customTimeMetric(
+			$this->client->customTimeMetricFromEnv(
 				"Presenter/{$module}/InitGlobals",
-				$_ENV['APP_PRESENTER_REQUIREMENTS_BEGIN'],
-				$_ENV['APP_PRESENTER_BEFORE_INIT']
+				'APP_PRESENTER_REQUIREMENTS_BEGIN',
+				'APP_PRESENTER_BEFORE_INIT'
 			);
-			$this->client->customTimeMetric(
+			$this->client->customTimeMetricFromEnv(
 				"Presenter/{$module}/Startup",
-				$_ENV['APP_PRESENTER_STARTUP_END'],
-				$_ENV['APP_PRESENTER_REQUIREMENTS_BEGIN']
+				'APP_PRESENTER_STARTUP_END',
+				'APP_PRESENTER_REQUIREMENTS_BEGIN'
 			);
-			$this->client->customTimeMetric(
+			$this->client->customTimeMetricFromEnv(
 				"Presenter/{$module}/Action",
-				$_ENV['APP_PRESENTER_ACTION_END'],
-				$_ENV['APP_PRESENTER_ACTION_BEGIN']
+				'APP_PRESENTER_ACTION_END',
+				'APP_PRESENTER_ACTION_BEGIN'
 			);
-			$this->client->customTimeMetric(
+			$this->client->customTimeMetricFromEnv(
 				"Presenter/{$module}/Render",
-				$_ENV['APP_PRESENTER_RENDER_END'],
-				$_ENV['APP_PRESENTER_RENDER_BEGIN']
+				'APP_PRESENTER_RENDER_END',
+				'APP_PRESENTER_RENDER_BEGIN'
 			);
-			$this->client->customTimeMetric(
+			$this->client->customTimeMetricFromEnv(
 				"Presenter/{$module}/BeforeRender",
-				$_ENV['APP_PRESENTER_RENDER_BEGIN'],
-				$_ENV['APP_PRESENTER_ACTION_END']
+				'APP_PRESENTER_RENDER_BEGIN',
+				'APP_PRESENTER_ACTION_END'
 			);
-			$this->client->customTimeMetric(
+			$this->client->customTimeMetricFromEnv(
 				"Presenter/{$module}/ProcessSignal",
-				$_ENV['APP_PRESENTER_SIGNAL_END'],
-				$_ENV['APP_PRESENTER_SIGNAL_BEGIN']
+				'APP_PRESENTER_SIGNAL_END',
+				'APP_PRESENTER_SIGNAL_BEGIN'
 			);
-			$this->client->customTimeMetric(
+			$this->client->customTimeMetricFromEnv(
 				"Presenter/{$module}/AfterRender",
-				$_ENV['APP_PRESENTER_AFTER_RENDER_END'],
-				$_ENV['APP_PRESENTER_RENDER_END']
+				'APP_PRESENTER_AFTER_RENDER_END',
+				'APP_PRESENTER_RENDER_END'
 			);
 
-			if (isset($_ENV['APP_PRESENTER_SEND_TEMPLATE_END']) && isset($_ENV['APP_PRESENTER_SEND_TEMPLATE_BEGIN'])) {
-				$this->client->customTimeMetric(
-					"Presenter/{$module}/SendTemplate",
-					$_ENV['APP_PRESENTER_SEND_TEMPLATE_END'],
-					$_ENV['APP_PRESENTER_SEND_TEMPLATE_BEGIN']
-				);
-			}
+			$this->client->customTimeMetricFromEnv(
+				"Presenter/{$module}/SendTemplate",
+				'APP_PRESENTER_SEND_TEMPLATE_END',
+				'APP_PRESENTER_SEND_TEMPLATE_BEGIN'
+			);
 		}
 	}
 
@@ -216,10 +214,10 @@ class NewRelicProfilingListener implements Subscriber
 	public function onShutdown(Application $app)
 	{
 		$_ENV['APP_SHUTDOWN_TIME_FLOAT'] = microtime(TRUE);
-		$this->client->customTimeMetric(
+		$this->client->customTimeMetricFromEnv(
 			'Nette/ResponseSendingTime',
-			$_ENV['APP_SHUTDOWN_TIME_FLOAT'],
-			$_ENV['APP_RESPONSE_TIME_FLOAT']
+			'APP_SHUTDOWN_TIME_FLOAT',
+			'APP_RESPONSE_TIME_FLOAT'
 		);
 	}
 

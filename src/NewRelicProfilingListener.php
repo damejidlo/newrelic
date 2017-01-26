@@ -197,11 +197,14 @@ class NewRelicProfilingListener implements Subscriber
 				$_ENV['APP_PRESENTER_AFTER_RENDER_END'],
 				$_ENV['APP_PRESENTER_RENDER_END']
 			);
-			$this->client->customTimeMetric(
-				"Presenter/{$module}/SendTemplate",
-				$_ENV['APP_PRESENTER_SEND_TEMPLATE_END'],
-				$_ENV['APP_PRESENTER_SEND_TEMPLATE_BEGIN']
-			);
+
+			if (isset($_ENV['APP_PRESENTER_SEND_TEMPLATE_END']) && isset($_ENV['APP_PRESENTER_SEND_TEMPLATE_BEGIN'])) {
+				$this->client->customTimeMetric(
+					"Presenter/{$module}/SendTemplate",
+					$_ENV['APP_PRESENTER_SEND_TEMPLATE_END'],
+					$_ENV['APP_PRESENTER_SEND_TEMPLATE_BEGIN']
+				);
+			}
 		}
 	}
 

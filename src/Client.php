@@ -45,16 +45,28 @@ class Client
 
 	/**
 	 * @param string $name
-	 * @param float|NULL $second
-	 * @param float|NULL $first
+	 * @param float $second
+	 * @param float $first
 	 */
-	public function customTimeMetric(string $name, float $second = NULL, float $first = NULL)
+	public function customTimeMetric(string $name, float $second, float $first)
 	{
-		if ($second === NULL || $first === NULL) {
+		$this->customMetric($name, (string) round(abs($second - $first) * 1000, 0));
+	}
+
+
+
+	/**
+	 * @param string $name
+	 * @param string $secondKey
+	 * @param string $firstKey
+	 */
+	public function customTimeMetricFromEnv(string $name, string $secondKey, string $firstKey)
+	{
+		if (!isset($_ENV[$firstKey]) || !isset($_ENV[$secondKey])) {
 			return;
 		}
 
-		$this->customMetric($name, (string) round(abs($second - $first) * 1000, 0));
+		$this->customTimeMetric($name, $_ENV[$secondKey], $_ENV[$firstKey]);
 	}
 
 

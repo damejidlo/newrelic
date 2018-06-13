@@ -90,7 +90,7 @@ trait PresenterProfiler
 	{
 		$this->methodCalls[$method] += 1;
 
-		if (count($this->methodCalls[$method]) === 1) {
+		if ($this->methodCalls[$method] === 1) {
 			$_ENV[$envKey] = microtime(TRUE);
 		}
 	}

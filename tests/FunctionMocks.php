@@ -2,13 +2,14 @@
 
 namespace DamejidloTests\NewRelic;
 
-use Nette\Object;
+use Nette;
 use Tester\Assert;
 
 
 
-class FunctionMocks extends Object
+class FunctionMocks
 {
+	use Nette\SmartObject;
 
 	/**
 	 * @var int[]

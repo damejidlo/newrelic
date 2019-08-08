@@ -7,16 +7,16 @@ require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../mockedFunctions.php';
 
 use Damejidlo\NewRelic\Client;
+use DamejidloTests\DjTestCase;
 use DamejidloTests\FunctionMocks;
 use Tester\Assert;
-use Tester\TestCase;
 
 
 
 /**
  * @testCase
  */
-class ClientTest extends TestCase
+class ClientTest extends DjTestCase
 {
 
 	protected function setUp() : void

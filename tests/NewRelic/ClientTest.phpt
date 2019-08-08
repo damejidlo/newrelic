@@ -1,106 +1,58 @@
 <?php
+declare(strict_types = 1);
 
-namespace Damejidlo\NewRelic {
+namespace DamejidloTests\NewRelic;
 
-	require_once __DIR__ . '/../bootstrap.php';
-	require_once __DIR__ . '/../FunctionMocks.php';
+require_once __DIR__ . '/../bootstrap.php';
+require_once __DIR__ . '/../mockedFunctions.php';
 
-	use DamejidloTests\NewRelic\FunctionMocks;
+use Damejidlo\NewRelic\Client;
+use DamejidloTests\FunctionMocks;
+use Tester\Assert;
+use Tester\TestCase;
 
 
 
-	/**
-	 * @param string $name
-	 * @param array $args
-	 */
-	function call_user_func_array($name, array $args)
+/**
+ * @testCase
+ */
+class ClientTest extends TestCase
+{
+
+	protected function setUp() : void
 	{
-		FunctionMocks::assertCall(__NAMESPACE__ . "\\$name", $args);
+		parent::setUp();
+
+		FunctionMocks::setup('Damejidlo\NewRelic');
 	}
 
 
 
-	function newrelic_add_custom_parameter()
+	protected function tearDown() : void
 	{
-		FunctionMocks::assertCall(__FUNCTION__, func_get_args());
-	}
+		parent::tearDown();
 
-
-	/**
-	 * @param string $name
-	 * @return bool
-	 */
-	function extension_loaded($name)
-	{
-		return $name === 'newrelic';
-	}
-
-	
-
-	/**
-	 * @param string $name
-	 * @return bool
-	 */
-	function function_exists($name)
-	{
-		return FunctionMocks::functionExists($name);
-	}
-
-}
-
-namespace DamejidloTests\NewRelic {
-
-	require_once __DIR__ . '/../bootstrap.php';
-	require_once __DIR__ . '/../FunctionMocks.php';
-
-	use Damejidlo\NewRelic\Client;
-	use Tester\Environment;
-	use Tester\TestCase;
-
-
-
-	/**
-	 * @testCase
-	 */
-	class ClientTest extends TestCase
-	{
-
-		public function testMethodsVia__call()
-		{
-			$client = new Client();
-
-			$args = ['key1', 'value1'];
-			FunctionMocks::expect('newrelic_add_custom_parameter', $args);
-			$client->addCustomParameter(...$args);
-
-			Environment::$checkAssertions = FALSE;
-		}
-
-
-
-		protected function tearDown()
-		{
-			parent::tearDown();
-
-			FunctionMocks::close();
-		}
-
-
-
-		protected function setUp()
-		{
-			parent::setUp();
-
-			FunctionMocks::setup('Damejidlo\NewRelic');
-		}
-
+		FunctionMocks::close();
 	}
 
 
 
-	(new ClientTest())->run();
+	public function testMethodsViaMagicCall() : void
+	{
+		$args = ['key1', 'value1'];
+		FunctionMocks::expect('newrelic_add_custom_parameter', $args);
+
+		$client = new Client();
+
+		Assert::noError(
+			function () use ($client, $args) : void {
+				$client->addCustomParameter(...$args);
+			}
+		);
+	}
 
 }
 
 
 
+(new ClientTest())->run();

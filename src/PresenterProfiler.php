@@ -31,9 +31,9 @@ trait PresenterProfiler
 	 * $_ENV['APP_PRESENTER_LEAVE'] - $_ENV['APP_PRESENTER_SEND_RESPONSE'] = shutdown()
 	 *
 	 * @param Request $request
-	 * @return IResponse|NULL
+	 * @return IResponse
 	 */
-	public function run(Request $request)
+	public function run(Request $request) : IResponse
 	{
 		$_ENV['APP_PRESENTER_ENTER'] = microtime(TRUE);
 
@@ -51,11 +51,12 @@ trait PresenterProfiler
 	/**
 	 * At the end of setParent, the globals init is called
 	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 * @param IContainer|NULL $parent
 	 * @param string|NULL $name
 	 * @return static
 	 */
-	public function setParent(IContainer $parent = NULL, $name = NULL)
+	public function setParent(?IContainer $parent = NULL, $name = NULL) : self
 	{
 		parent::setParent($parent, $name);
 
@@ -71,9 +72,9 @@ trait PresenterProfiler
 	 *
 	 * $_ENV['APP_PRESENTER_REQUIREMENTS_BEGIN'] - $_ENV['APP_PRESENTER_BEFORE_INIT'] = initGlobalParameters()
 	 *
-	 * @param array $params
+	 * @param mixed[] $params
 	 */
-	public function loadState(array $params)
+	public function loadState(array $params) : void
 	{
 		parent::loadState($params);
 
@@ -82,11 +83,7 @@ trait PresenterProfiler
 
 
 
-	/**
-	 * @param string $method
-	 * @param string $envKey
-	 */
-	private function methodCalled(string $method, string $envKey)
+	private function methodCalled(string $method, string $envKey) : void
 	{
 		$this->methodCalls[$method] += 1;
 
@@ -105,8 +102,9 @@ trait PresenterProfiler
 	 * $_ENV['APP_PRESENTER_RENDER_END'] - $_ENV['APP_PRESENTER_RENDER_BEGIN'] = render<default>()
 	 * $_ENV['APP_PRESENTER_RENDER_BEGIN'] - $_ENV['APP_PRESENTER_ACTION_END'] = beforeRender()
 	 *
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 * @param string $method
-	 * @param array $params
+	 * @param mixed[] $params
 	 * @return bool
 	 */
 	protected function tryCall($method, array $params) : bool
@@ -144,7 +142,7 @@ trait PresenterProfiler
 	 *
 	 * @throws BadSignalException
 	 */
-	public function processSignal()
+	public function processSignal() : void
 	{
 		$_ENV['APP_PRESENTER_SIGNAL_BEGIN'] = microtime(TRUE);
 		try {
@@ -159,7 +157,7 @@ trait PresenterProfiler
 	/**
 	 * $_ENV['APP_PRESENTER_AFTER_RENDER_END'] - $_ENV['APP_PRESENTER_RENDER_END'] = afterRender()
 	 */
-	protected function saveGlobalState()
+	protected function saveGlobalState() : void
 	{
 		$this->methodCalled('saveGlobalState', 'APP_PRESENTER_AFTER_RENDER_END');
 
@@ -174,7 +172,7 @@ trait PresenterProfiler
 	 * @throws BadRequestException
 	 * @throws AbortException
 	 */
-	public function sendTemplate()
+	public function sendTemplate() : void
 	{
 		$_ENV['APP_PRESENTER_SEND_TEMPLATE_BEGIN'] = microtime(TRUE);
 
@@ -192,7 +190,7 @@ trait PresenterProfiler
 	 * @param IResponse $response
 	 * @throws AbortException
 	 */
-	public function sendResponse(IResponse $response)
+	public function sendResponse(IResponse $response) : void
 	{
 		$_ENV['APP_PRESENTER_SEND_RESPONSE'] = microtime(TRUE);
 

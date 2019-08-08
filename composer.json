@@ -20,5 +20,10 @@
 		"psr-4": {
 			"Damejidlo\\NewRelic\\": "src/"
 		}
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "3.0-dev"
+		}
 	}
 }

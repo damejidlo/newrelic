@@ -1,2 +1,5 @@
-vendor
-composer.lock
+/vendor
+/composer.lock
+/phpstan*.neon
+/.phpcs.xml
+/.phpcs-cache

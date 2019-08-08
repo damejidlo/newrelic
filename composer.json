@@ -11,8 +11,9 @@
 		"kdyby/events": "~3.0"
 	},
 	"require-dev": {
+		"damejidlo/coding-standard": "^1.1.0",
+		"jakub-onderka/php-parallel-lint": "^1.0",
 		"nette/tester": "^2.2.0",
-		"damejidlo/coding-standard": "^0.5.0",
 		"phpstan/phpstan-shim": "^0.11.12",
 		"phpstan/phpstan-nette": "^0.11.1",
 		"phpstan/phpstan-strict-rules": "^0.11.1"

@@ -93,7 +93,7 @@ class NewRelicProfilingListener implements Subscriber
 
 	public function onRequest(Application $app, Request $request) : void
 	{
-		if (!empty($request->parameters['exception']) && $request->parameters['exception'] instanceof Exception) {
+		if (isset($request->parameters['exception']) && $request->parameters['exception'] instanceof Exception) {
 			return;
 		}
 
@@ -138,8 +138,8 @@ class NewRelicProfilingListener implements Subscriber
 
 		$presenter = $app->getPresenter();
 
-		if ($presenter && $presenter instanceof Presenter) {
-			$module = $this->getModule($presenter->getName());
+		if ($presenter instanceof Presenter) {
+			$module = $this->getModule((string) $presenter->getName());
 
 			$this->client->customTimeMetricFromEnv(
 				"Presenter/{$module}/Shutdown",
@@ -239,7 +239,7 @@ class NewRelicProfilingListener implements Subscriber
 
 
 	/**
-	 * @param string[] $params
+	 * @param mixed[] $params
 	 */
 	protected function setCustomParametersToClient(array $params) : void
 	{
@@ -264,7 +264,7 @@ class NewRelicProfilingListener implements Subscriber
 	protected function handleWebRequest(Request $request) : void
 	{
 		$module = $this->getModule($request->getPresenterName());
-		$this->client->setAppname($this->appUrl . ($module ? "/{$module}" : ''));
+		$this->client->setAppname($this->appUrl . ($module !== '' ? "/{$module}" : ''));
 		if ($module === 'Cron') {
 			$this->client->backgroundJob(TRUE);
 		}

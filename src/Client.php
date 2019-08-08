@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Damejidlo\NewRelic;
 
 use Nette\SmartObject;
+use Nette\Utils\Strings;
 
 
 
@@ -89,7 +90,7 @@ class Client
 	 */
 	private static function convertCamelCaseToUnderscore(string $text) : string
 	{
-		$text = preg_replace('#(.)(?=[A-Z])#', '$1_', $text);
+		$text = Strings::replace($text, '#(.)(?=[A-Z])#', '$1_');
 		$text = strtolower($text);
 		$text = rawurlencode($text);
 

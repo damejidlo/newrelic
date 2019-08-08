@@ -7,3 +7,8 @@ parameters:
 	level: max
 	paths:
 		- %currentWorkingDirectory%/src
+
+	ignoreErrors:
+		-
+			path: 'src/Client.php'
+			message: '~Parameter #1 \$function of function call_user_func_array expects callable\(\): mixed, string given~'

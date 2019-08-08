@@ -5,7 +5,7 @@
 	"keywords": ["newrelic", "nette"],
 	"license": "MIT",
 	"require": {
-		"php": ">= 7.0",
+		"php": ">=7.2",
 		"nette/utils": "~2.4",
 		"nette/application": "~2.4",
 		"kdyby/events": "~3.0"

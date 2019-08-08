@@ -1,8 +1,6 @@
 language: php
 
 php:
-  - 7.0
-  - 7.1
   - 7.2
   - 7.3
 
@@ -13,7 +11,7 @@ env:
 jobs:
   include:
     -   stage: Code Standard Checker
-        php: 7.0
+        php: 7.2
         install:
           - travis_retry composer update --no-interaction --optimize-autoloader --prefer-dist
         script:

@@ -1,8 +1,9 @@
 {
 	"name": "damejidlo/newrelic",
-	"license": "MIT",
-	"description": "",
 	"type": "library",
+	"description": "Newrelic integration into Nette Framework",
+	"keywords": ["newrelic", "nette"],
+	"license": "MIT",
 	"require": {
 		"php": ">= 7.0",
 		"nette/utils": "~2.4",

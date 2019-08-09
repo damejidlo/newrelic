@@ -22,7 +22,11 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Damejidlo\\NewRelic\\": "src/",
+			"Damejidlo\\NewRelic\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
 			"DamejidloTests\\": "tests/"
 		}
 	},

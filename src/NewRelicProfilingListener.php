@@ -8,7 +8,6 @@ use Kdyby\Events\Subscriber;
 use Nette\Application\Application;
 use Nette\Application\IResponse;
 use Nette\Application\Request;
-use Nette\Application\UI\Presenter;
 use Nette\DI\Container;
 use Nette\SmartObject;
 use Nette\Utils\Strings;
@@ -119,59 +118,6 @@ class NewRelicProfilingListener implements Subscriber
 			'APP_RESPONSE_TIME_FLOAT',
 			'APP_REQUEST_TIME_FLOAT'
 		);
-
-		$presenter = $app->getPresenter();
-
-		if ($presenter instanceof Presenter) {
-			$module = $this->getModule((string) $presenter->getName());
-
-			$this->client->customTimeMetricFromEnv(
-				"Presenter/{$module}/Shutdown",
-				'APP_PRESENTER_LEAVE',
-				'APP_PRESENTER_SEND_RESPONSE'
-			);
-			$this->client->customTimeMetricFromEnv(
-				"Presenter/{$module}/InitGlobals",
-				'APP_PRESENTER_REQUIREMENTS_BEGIN',
-				'APP_PRESENTER_BEFORE_INIT'
-			);
-			$this->client->customTimeMetricFromEnv(
-				"Presenter/{$module}/Startup",
-				'APP_PRESENTER_STARTUP_END',
-				'APP_PRESENTER_REQUIREMENTS_BEGIN'
-			);
-			$this->client->customTimeMetricFromEnv(
-				"Presenter/{$module}/Action",
-				'APP_PRESENTER_ACTION_END',
-				'APP_PRESENTER_ACTION_BEGIN'
-			);
-			$this->client->customTimeMetricFromEnv(
-				"Presenter/{$module}/Render",
-				'APP_PRESENTER_RENDER_END',
-				'APP_PRESENTER_RENDER_BEGIN'
-			);
-			$this->client->customTimeMetricFromEnv(
-				"Presenter/{$module}/BeforeRender",
-				'APP_PRESENTER_RENDER_BEGIN',
-				'APP_PRESENTER_ACTION_END'
-			);
-			$this->client->customTimeMetricFromEnv(
-				"Presenter/{$module}/ProcessSignal",
-				'APP_PRESENTER_SIGNAL_END',
-				'APP_PRESENTER_SIGNAL_BEGIN'
-			);
-			$this->client->customTimeMetricFromEnv(
-				"Presenter/{$module}/AfterRender",
-				'APP_PRESENTER_AFTER_RENDER_END',
-				'APP_PRESENTER_RENDER_END'
-			);
-
-			$this->client->customTimeMetricFromEnv(
-				"Presenter/{$module}/SendTemplate",
-				'APP_PRESENTER_SEND_TEMPLATE_END',
-				'APP_PRESENTER_SEND_TEMPLATE_BEGIN'
-			);
-		}
 	}
 
 

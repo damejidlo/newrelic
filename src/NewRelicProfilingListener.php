@@ -107,22 +107,6 @@ class NewRelicProfilingListener implements Subscriber
 		);
 
 		$this->handleRequest($request);
-
-		$this->client->customTimeMetricFromEnv(
-			'Nette/RequestTime',
-			'APP_REQUEST_TIME_FLOAT',
-			'APP_STARTUP_TIME_FLOAT'
-		);
-		$this->client->customTimeMetricFromEnv(
-			'Nette/CompilationTime',
-			'COMPILATION_TIME_FLOAT',
-			'REQUEST_TIME_FLOAT'
-		);
-		$this->client->customTimeMetricFromEnv(
-			'Nette/StartupTime',
-			'APP_STARTUP_TIME_FLOAT',
-			'COMPILATION_TIME_FLOAT'
-		);
 	}
 
 

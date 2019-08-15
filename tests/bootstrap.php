@@ -1,18 +1,27 @@
 <?php
+declare(strict_types = 1);
 
-namespace DamejidloTests\NewRelic;
+namespace DamejidloTests;
 
-require __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use Tester\Environment;
 
 
 
-if (!class_exists('Tester\Assert')) {
-	echo "Install Nette Tester using `composer update --dev`\n";
-	exit(1);
+// detect PHPStan
+if (getenv('IS_PHPSTAN') !== FALSE) {
+	$_ENV['IS_PHPSTAN'] = in_array(strtolower(getenv('IS_PHPSTAN')), ['1', 'true', 'yes', 'on'], TRUE);
+} else {
+	$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+	/** @var array $lastTrace */
+	$lastTrace = end($trace);
+	$_ENV['IS_PHPSTAN'] = (bool) preg_match('~[/\\\\]phpstan(?:\.phar)?$~', $lastTrace['file'] ?? '');
 }
 
-date_default_timezone_set('Europe/Prague');
-
-Environment::setup();
+if (! $_ENV['IS_PHPSTAN']) {
+	// configure environment
+	date_default_timezone_set('Europe/Prague');
+	umask(0);
+	Environment::setup();
+}

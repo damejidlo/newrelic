@@ -42,11 +42,6 @@ class NewRelicProfilingListener implements Subscriber
 
 
 
-	/**
-	 * @param string $appUrl
-	 * @param Container $container
-	 * @param Client $client
-	 */
 	public function __construct(string $appUrl, Container $container, Client $client)
 	{
 		$this->appUrl = $appUrl;
@@ -57,7 +52,7 @@ class NewRelicProfilingListener implements Subscriber
 
 
 	/**
-	 * @inheritdoc
+	 * @return string[]
 	 */
 	public function getSubscribedEvents() : array
 	{
@@ -71,10 +66,7 @@ class NewRelicProfilingListener implements Subscriber
 
 
 
-	/**
-	 * @param Application $app
-	 */
-	public function onStartup(Application $app)
+	public function onStartup(Application $app) : void
 	{
 		$_ENV['APP_STARTUP_TIME_FLOAT'] = microtime(TRUE);
 		$this->client->disableAutorum();
@@ -99,13 +91,9 @@ class NewRelicProfilingListener implements Subscriber
 
 
 
-	/**
-	 * @param Application $app
-	 * @param Request $request
-	 */
-	public function onRequest(Application $app, Request $request)
+	public function onRequest(Application $app, Request $request) : void
 	{
-		if (!empty($request->parameters['exception']) && $request->parameters['exception'] instanceof Exception) {
+		if (isset($request->parameters['exception']) && $request->parameters['exception'] instanceof Exception) {
 			return;
 		}
 
@@ -139,11 +127,7 @@ class NewRelicProfilingListener implements Subscriber
 
 
 
-	/**
-	 * @param Application $app
-	 * @param IResponse $response
-	 */
-	public function onResponse(Application $app, IResponse $response)
+	public function onResponse(Application $app, IResponse $response) : void
 	{
 		$_ENV['APP_RESPONSE_TIME_FLOAT'] = microtime(TRUE);
 		$this->client->customTimeMetricFromEnv(
@@ -154,8 +138,8 @@ class NewRelicProfilingListener implements Subscriber
 
 		$presenter = $app->getPresenter();
 
-		if ($presenter && $presenter instanceof Presenter) {
-			$module = $this->getModule($presenter->getName());
+		if ($presenter instanceof Presenter) {
+			$module = $this->getModule((string) $presenter->getName());
 
 			$this->client->customTimeMetricFromEnv(
 				"Presenter/{$module}/Shutdown",
@@ -208,10 +192,7 @@ class NewRelicProfilingListener implements Subscriber
 
 
 
-	/**
-	 * @param Application $app
-	 */
-	public function onShutdown(Application $app)
+	public function onShutdown(Application $app) : void
 	{
 		$_ENV['APP_SHUTDOWN_TIME_FLOAT'] = microtime(TRUE);
 		$this->client->customTimeMetricFromEnv(
@@ -223,10 +204,6 @@ class NewRelicProfilingListener implements Subscriber
 
 
 
-	/**
-	 * @param string $presenterName
-	 * @return string
-	 */
 	protected function getModule(string $presenterName) : string
 	{
 		$modules = explode(':', Strings::trim($presenterName, ':'));
@@ -238,9 +215,6 @@ class NewRelicProfilingListener implements Subscriber
 
 
 
-	/**
-	 * @return string
-	 */
 	protected function resolveCliTransactionName() : string
 	{
 		return '$ ' . basename($_SERVER['argv'][0]) . ' ' . implode(' ', array_slice($_SERVER['argv'], 1));
@@ -265,9 +239,9 @@ class NewRelicProfilingListener implements Subscriber
 
 
 	/**
-	 * @param array $params
+	 * @param mixed[] $params
 	 */
-	protected function setCustomParametersToClient(array $params)
+	protected function setCustomParametersToClient(array $params) : void
 	{
 		foreach ($params as $name => $value) {
 			if (is_scalar($value)) {
@@ -278,7 +252,7 @@ class NewRelicProfilingListener implements Subscriber
 
 
 
-	protected function handleCliRequest()
+	protected function handleCliRequest() : void
 	{
 		$this->client->setAppname("{$this->appUrl}/Cron");
 		$this->client->nameTransaction($this->resolveCliTransactionName());
@@ -287,13 +261,10 @@ class NewRelicProfilingListener implements Subscriber
 
 
 
-	/**
-	 * @param Request $request
-	 */
-	protected function handleWebRequest(Request $request)
+	protected function handleWebRequest(Request $request) : void
 	{
 		$module = $this->getModule($request->getPresenterName());
-		$this->client->setAppname($this->appUrl . ($module ? "/{$module}" : ''));
+		$this->client->setAppname($this->appUrl . ($module !== '' ? "/{$module}" : ''));
 		if ($module === 'Cron') {
 			$this->client->backgroundJob(TRUE);
 		}
@@ -304,10 +275,7 @@ class NewRelicProfilingListener implements Subscriber
 
 
 
-	/**
-	 * @param Request $request
-	 */
-	protected function handleRequest(Request $request)
+	protected function handleRequest(Request $request) : void
 	{
 		if (PHP_SAPI === 'cli') {
 			$this->handleCliRequest();

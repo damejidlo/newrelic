@@ -1,15 +1,17 @@
 <?php
+declare(strict_types = 1);
 
-namespace DamejidloTests\NewRelic;
+namespace DamejidloTests;
 
-use Nette;
+use Nette\StaticClass;
 use Tester\Assert;
 
 
 
 class FunctionMocks
 {
-	use Nette\SmartObject;
+
+	use StaticClass;
 
 	/**
 	 * @var int[]
@@ -17,7 +19,7 @@ class FunctionMocks
 	private static $called = [];
 
 	/**
-	 * @var array
+	 * @var mixed[][]
 	 */
 	private static $expected = [];
 
@@ -28,10 +30,7 @@ class FunctionMocks
 
 
 
-	/**
-	 * @param string $namespace
-	 */
-	public static function setup($namespace)
+	public static function setup(string $namespace) : void
 	{
 		self::$called = [];
 		self::$expected = [];
@@ -42,9 +41,9 @@ class FunctionMocks
 
 	/**
 	 * @param string $name
-	 * @param array $args
+	 * @param mixed[] $args
 	 */
-	public static function expect($name, array $args)
+	public static function expect(string $name, array $args) : void
 	{
 		self::$expected[self::getFullFunctionName($name)] = $args;
 	}
@@ -53,9 +52,9 @@ class FunctionMocks
 
 	/**
 	 * @param string $fullName
-	 * @param array $args
+	 * @param mixed[] $args
 	 */
-	public static function assertCall($fullName, array $args)
+	public static function assertCall(string $fullName, array $args) : void
 	{
 		self::recordCall($fullName);
 
@@ -66,15 +65,11 @@ class FunctionMocks
 		if (self::$expected[$fullName] !== $args) {
 			Assert::fail("Function '{$fullName}' was called with unexpected arguments.");
 		}
-
 	}
 
 
 
-	/**
-	 * @param string $fullName
-	 */
-	private static function recordCall($fullName)
+	private static function recordCall(string $fullName) : void
 	{
 		if (!isset(self::$called[$fullName])) {
 			self::$called[$fullName] = 0;
@@ -85,7 +80,7 @@ class FunctionMocks
 
 
 
-	public static function close()
+	public static function close() : void
 	{
 		foreach (self::$expected as $functionName => $expectedArgs) {
 			if (!isset(self::$called[$functionName])) {
@@ -96,22 +91,14 @@ class FunctionMocks
 
 
 
-	/**
-	 * @param string $name
-	 * @return bool
-	 */
-	public static function functionExists($name)
+	public static function functionExists(string $name) : bool
 	{
 		return isset(self::$expected[self::getFullFunctionName($name)]);
 	}
 
 
 
-	/**
-	 * @param string $name
-	 * @return string
-	 */
-	protected static function getFullFunctionName($name)
+	protected static function getFullFunctionName(string $name) : string
 	{
 		return self::$namespace . "\\$name";
 	}

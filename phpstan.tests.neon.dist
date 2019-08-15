@@ -1,0 +1,19 @@
+includes:
+	- vendor/phpstan/phpstan-nette/extension.neon
+	- vendor/phpstan/phpstan-nette/rules.neon
+	- vendor/phpstan/phpstan-strict-rules/rules.neon
+
+parameters:
+	level: max
+	paths:
+		- %currentWorkingDirectory%/tests
+
+	fileExtensions:
+		- php
+		- phpt
+
+	autoload_directories:
+		- %currentWorkingDirectory%/tests
+
+	autoload_files:
+		- %currentWorkingDirectory%/tests/mockedFunctions.php

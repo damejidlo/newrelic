@@ -1,23 +1,38 @@
 {
 	"name": "damejidlo/newrelic",
-	"license": "MIT",
-	"description": "",
 	"type": "library",
+	"description": "Newrelic integration into Nette Framework",
+	"keywords": ["newrelic", "nette"],
+	"license": "MIT",
 	"require": {
-		"php": ">= 7.0",
-		"nette/utils": "~2.4",
-		"nette/application": "~2.4",
-		"kdyby/events": "~3.0"
+		"php": ">=7.2",
+		"nette/utils": "^2.4",
+		"nette/application": "^2.4",
+		"kdyby/events": "^3.1.1"
 	},
 	"require-dev": {
-		"nette/tester": "@dev",
-		"damejidlo/coding-standard": "^0.5.0",
-		"phpstan/phpstan": "^0.6",
-		"phpstan/phpstan-nette": "^0.6"
+		"damejidlo/coding-standard": "^1.1.0",
+		"jakub-onderka/php-parallel-lint": "^1.0",
+		"nette/component-model": "^2.3.1",
+		"nette/http": "^2.4",
+		"nette/tester": "^2.2.0",
+		"phpstan/phpstan-shim": "^0.11.12",
+		"phpstan/phpstan-nette": "^0.11.1",
+		"phpstan/phpstan-strict-rules": "^0.11.1"
 	},
 	"autoload": {
 		"psr-4": {
 			"Damejidlo\\NewRelic\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"DamejidloTests\\": "tests/"
+		}
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "3.0-dev"
 		}
 	}
 }

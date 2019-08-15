@@ -4,26 +4,27 @@ declare(strict_types = 1);
 namespace Damejidlo\NewRelic;
 
 use Nette\SmartObject;
+use Nette\Utils\Strings;
 
 
 
 /**
- * @method setAppname($name, $license = NULL, $xmit = FALSE)
- * @method noticeError($message, $exception = NULL)
- * @method nameTransaction($name)
- * @method endOfTransaction()
- * @method endTransaction($ignore = FALSE)
- * @method startTransaction($appname, $license = NULL)
- * @method ignoreTransaction()
- * @method ignoreApdex()
- * @method backgroundJob($flag)
- * @method captureParams($enable)
- * @method addCustomParameter($key, $value)
- * @method addCustomTracer($callback)
- * @method getBrowserTimingHeader($flag = TRUE)
- * @method getBrowserTimingFooter($flag = TRUE)
- * @method disableAutorum()
- * @method setUserAttributes($user, $account, $product)
+ * @method bool setAppname(string $name, ?string $license = NULL, ?bool $xmit = FALSE)
+ * @method void noticeError(string $message, ?\Throwable $exception = NULL)
+ * @method bool nameTransaction(string $name)
+ * @method void endOfTransaction()
+ * @method bool endTransaction(bool $ignore = FALSE)
+ * @method bool startTransaction(string $appname, ?string $license = NULL)
+ * @method void ignoreTransaction()
+ * @method void ignoreApdex()
+ * @method void backgroundJob(bool $flag = TRUE)
+ * @method void captureParams(bool $enable = TRUE)
+ * @method bool addCustomParameter(string $key, $value)
+ * @method bool addCustomTracer(string $callback)
+ * @method string getBrowserTimingHeader(bool $flag = TRUE)
+ * @method string getBrowserTimingFooter(bool $flag = TRUE)
+ * @method bool disableAutorum()
+ * @method bool setUserAttributes(string $user, string $account, string $product)
  */
 class Client
 {
@@ -32,48 +33,36 @@ class Client
 		__call as traitCall;
 	}
 
-	/**
-	 * @param string $name
-	 * @param string $value
-	 */
-	public function customMetric(string $name, string $value)
+
+
+	public function customMetric(string $name, string $value) : bool
 	{
-		$this->__call(__FUNCTION__, ['Custom/' . $name, $value]);
+		return $this->__call(__FUNCTION__, ['Custom/' . $name, $value]);
 	}
 
 
 
-	/**
-	 * @param string $name
-	 * @param float $second
-	 * @param float $first
-	 */
-	public function customTimeMetric(string $name, float $second, float $first)
+	public function customTimeMetric(string $name, float $second, float $first) : bool
 	{
-		$this->customMetric($name, (string) round(abs($second - $first) * 1000, 0));
+		return $this->customMetric($name, (string) round(abs($second - $first) * 1000, 0));
 	}
 
 
 
-	/**
-	 * @param string $name
-	 * @param string $secondKey
-	 * @param string $firstKey
-	 */
-	public function customTimeMetricFromEnv(string $name, string $secondKey, string $firstKey)
+	public function customTimeMetricFromEnv(string $name, string $secondKey, string $firstKey) : bool
 	{
 		if (!isset($_ENV[$firstKey]) || !isset($_ENV[$secondKey])) {
-			return;
+			return FALSE;
 		}
 
-		$this->customTimeMetric($name, $_ENV[$secondKey], $_ENV[$firstKey]);
+		return $this->customTimeMetric($name, $_ENV[$secondKey], $_ENV[$firstKey]);
 	}
 
 
 
 	/**
 	 * @param string $name
-	 * @param array $args
+	 * @param mixed[] $args
 	 * @return mixed
 	 */
 	public function __call(string $name, array $args)
@@ -101,7 +90,7 @@ class Client
 	 */
 	private static function convertCamelCaseToUnderscore(string $text) : string
 	{
-		$text = preg_replace('#(.)(?=[A-Z])#', '$1_', $text);
+		$text = Strings::replace($text, '#(.)(?=[A-Z])#', '$1_');
 		$text = strtolower($text);
 		$text = rawurlencode($text);
 

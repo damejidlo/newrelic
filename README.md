@@ -1,8 +1,6 @@
 [![Downloads this Month](https://img.shields.io/packagist/dm/damejidlo/newrelic.svg)](https://packagist.org/packages/damejidlo/newrelic)
 [![Latest Stable Version](https://poser.pugx.org/damejidlo/newrelic/v/stable)](https://github.com/damejidlo/newrelic/releases)
 ![](https://travis-ci.org/damejidlo/newrelic.svg?branch=master)
-![](https://scrutinizer-ci.com/g/damejidlo/newrelic/badges/quality-score.png?b=master)
-![](https://scrutinizer-ci.com/g/damejidlo/newrelic/badges/coverage.png?b=master)
 
 # Install
 ```
@@ -21,5 +19,5 @@ $container = require __DIR__ . '/../app/bootstrap.php';
 
 $_ENV['COMPILATION_TIME_FLOAT'] = microtime(TRUE);
 
-$container->getByType('Nette\Application\Application')->run();
+$container->getByType(\Nette\Application\Application::class)->run();
 ```

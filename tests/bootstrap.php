@@ -6,6 +6,7 @@ namespace DamejidloTests;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Tester\Environment;
+use Tester\Helpers;
 
 
 
@@ -24,4 +25,11 @@ if (! $_ENV['IS_PHPSTAN']) {
 	date_default_timezone_set('Europe/Prague');
 	umask(0);
 	Environment::setup();
+}
+
+
+// create temporary directory
+define('TEMP_DIR', __DIR__ . '/tmp/' . (isset($_SERVER['argv']) ? md5(serialize($_SERVER['argv'])) : getmypid()));
+if (getenv('IS_PHPSTAN') !== '1') {
+	Helpers::purge(TEMP_DIR);
 }

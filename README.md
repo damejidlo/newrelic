@@ -8,8 +8,17 @@ composer require damejidlo/newrelic
 ```
 
 # Configure
-1. In your `BasePresenter` add `use PresenterProfiler;`.
-2. Into `index.php` put `$_ENV` settings (something like this):
+
+Register `NewRelicExtension` in your config:
+```yaml
+extensions:
+    newrelic: Damejidlo\NewRelic\DI\NewRelicExtension
+
+newrelic:
+	applicationName: fooBar
+```
+
+Put `$_ENV` settings (something like this) into `index.php`:
 ```php
 <?php
 

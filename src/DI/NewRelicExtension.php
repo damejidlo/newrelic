@@ -7,6 +7,7 @@ use Damejidlo\NewRelic\Client;
 use Damejidlo\NewRelic\NewRelicProfilingListener;
 use Nette\Application\Application;
 use Nette\DI\CompilerExtension;
+use Nette\PhpGenerator\ClassType;
 use Nette\Utils\Validators;
 
 
@@ -19,6 +20,7 @@ class NewRelicExtension extends CompilerExtension
 	 */
 	private $defaults = [
 		'applicationName' => '',
+		'autorum' => FALSE,
 	];
 
 
@@ -27,6 +29,7 @@ class NewRelicExtension extends CompilerExtension
 	{
 		$config = $this->validateConfig($this->defaults);
 		Validators::assert($config['applicationName'], 'string:1..');
+		Validators::assert($config['autorum'], 'bool');
 
 		$containerBuilder = $this->getContainerBuilder();
 
@@ -48,6 +51,18 @@ class NewRelicExtension extends CompilerExtension
 		$applicationDefintion->addSetup('?->onRequest[] = ?', ['@self', [$this->prefix('@profilingListener'), 'onRequest']]);
 		$applicationDefintion->addSetup('?->onResponse[] = ?', ['@self', [$this->prefix('@profilingListener'), 'onResponse']]);
 		$applicationDefintion->addSetup('?->onShutdown[] = ?', ['@self', [$this->prefix('@profilingListener'), 'onShutdown']]);
+	}
+
+
+
+	public function afterCompile(ClassType $class) : void
+	{
+		$config = $this->getConfig();
+
+		if (! (bool) $config['autorum']) {
+			$initialize = $class->getMethod('initialize');
+			$initialize->addBody('$this->getService(?)->disableAutorum();', [$this->prefix('client')]);
+		}
 	}
 
 }

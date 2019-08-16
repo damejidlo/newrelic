@@ -8,6 +8,7 @@ require_once __DIR__ . '/../../bootstrap.php';
 use Damejidlo\NewRelic\Client;
 use Damejidlo\NewRelic\NewRelicProfilingListener;
 use DamejidloTests\DjTestCase;
+use DamejidloTests\FunctionMocks;
 use Nette\Configurator;
 use Nette\DI\Container;
 use Tester\Assert;
@@ -37,6 +38,10 @@ class NewRelicExtensionTest extends DjTestCase
 
 	protected function setUp() : void
 	{
+		parent::setUp();
+
+		FunctionMocks::expect('newrelic_disable_autorum', []);
+
 		$configurator = new Configurator();
 		$configurator->setTempDirectory(TEMP_DIR);
 		$configurator->setDebugMode(FALSE);

@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace DamejidloTests\NewRelic;
 
 require_once __DIR__ . '/../bootstrap.php';
-require_once __DIR__ . '/../mockedFunctions.php';
 
 use Damejidlo\NewRelic\Client;
 use DamejidloTests\DjTestCase;
@@ -18,24 +17,6 @@ use Tester\Assert;
  */
 class ClientTest extends DjTestCase
 {
-
-	protected function setUp() : void
-	{
-		parent::setUp();
-
-		FunctionMocks::setup('Damejidlo\NewRelic');
-	}
-
-
-
-	protected function tearDown() : void
-	{
-		parent::tearDown();
-
-		FunctionMocks::close();
-	}
-
-
 
 	public function testMethodsViaMagicCall() : void
 	{

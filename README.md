@@ -17,6 +17,8 @@ extensions:
 newrelic:
 	applicationName: fooBar
 	autorum: FALSE
+	customTracers:
+		- 'Doctrine\ORM\EntityManager::flush'
 ```
 
 Put `$_ENV` settings (something like this) into `index.php`:

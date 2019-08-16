@@ -63,12 +63,6 @@ class NewRelicProfilingListener
 			'APP_STARTUP_TIME_FLOAT',
 			'COMPILATION_TIME_FLOAT'
 		);
-
-		$this->client->addCustomTracer('Nette\Application\Routers\RouteList::match');
-		$this->client->addCustomTracer('Nette\Application\UI\Presenter::createRequest');
-		$this->client->addCustomTracer('Nette\Application\UI\Presenter::run');
-		$this->client->addCustomTracer('Nette\Application\Responses\TextResponse::send');
-		$this->client->addCustomTracer('Doctrine\ORM\EntityManager::flush');
 	}
 
 

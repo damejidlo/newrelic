@@ -21,6 +21,11 @@ class NewRelicExtension extends CompilerExtension
 	private $defaults = [
 		'applicationName' => '',
 		'autorum' => FALSE,
+		'customTracers' => [
+			'Nette\Application\UI\Presenter::createRequest',
+			'Nette\Application\UI\Presenter::run',
+			'Nette\Application\Responses\TextResponse::send',
+		],
 	];
 
 
@@ -30,6 +35,7 @@ class NewRelicExtension extends CompilerExtension
 		$config = $this->validateConfig($this->defaults);
 		Validators::assert($config['applicationName'], 'string:1..');
 		Validators::assert($config['autorum'], 'bool');
+		Validators::assert($config['customTracers'], 'string[]');
 
 		$containerBuilder = $this->getContainerBuilder();
 
@@ -58,10 +64,14 @@ class NewRelicExtension extends CompilerExtension
 	public function afterCompile(ClassType $class) : void
 	{
 		$config = $this->getConfig();
+		$initialize = $class->getMethod('initialize');
 
 		if (! (bool) $config['autorum']) {
-			$initialize = $class->getMethod('initialize');
 			$initialize->addBody('$this->getService(?)->disableAutorum();', [$this->prefix('client')]);
+		}
+
+		foreach ($config['customTracers'] as $functionName) {
+			$initialize->addBody('$this->getService(?)->addCustomTracer(?);', [$this->prefix('client'), $functionName]);
 		}
 	}
 

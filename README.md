@@ -16,6 +16,7 @@ extensions:
 
 newrelic:
 	applicationName: fooBar
+	autorum: FALSE
 ```
 
 Put `$_ENV` settings (something like this) into `index.php`:

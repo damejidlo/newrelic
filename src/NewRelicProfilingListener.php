@@ -52,7 +52,6 @@ class NewRelicProfilingListener
 	public function onStartup(Application $app) : void
 	{
 		$_ENV['APP_STARTUP_TIME_FLOAT'] = microtime(TRUE);
-		$this->client->disableAutorum();
 
 		$this->client->customTimeMetricFromEnv(
 			'Nette/CompilationTime',

@@ -1,0 +1,8 @@
+extensions:
+    newrelic: Damejidlo\NewRelic\DI\NewRelicExtension
+
+newrelic:
+	applicationName: testApplication
+
+application:
+    scanDirs: false

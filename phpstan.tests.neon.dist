@@ -17,3 +17,6 @@ parameters:
 
 	autoload_files:
 		- %currentWorkingDirectory%/tests/mockedFunctions.php
+
+	excludes_analyse:
+		- %currentWorkingDirectory%/tests/tmp/*

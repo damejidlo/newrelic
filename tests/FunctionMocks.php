@@ -45,7 +45,7 @@ class FunctionMocks
 	 */
 	public static function expect(string $name, array $args) : void
 	{
-		self::$expected[self::getFullFunctionName($name)] = $args;
+		self::$expected[self::getFullFunctionName($name)][] = $args;
 	}
 
 
@@ -56,15 +56,16 @@ class FunctionMocks
 	 */
 	public static function assertCall(string $fullName, array $args) : void
 	{
-		self::recordCall($fullName);
-
 		if (!isset(self::$expected[$fullName])) {
 			Assert::fail("Function '{$fullName}' was not expected.");
 		}
 
-		if (self::$expected[$fullName] !== $args) {
-			Assert::fail("Function '{$fullName}' was called with unexpected arguments.");
-		}
+		$callIndex = self::$called[$fullName] ?? 0;
+		$expectedArgs = self::$expected[$fullName][$callIndex] ?? end(self::$expected[$fullName]);
+
+		Assert::same($expectedArgs, $args, "Arguments of '{$fullName}' function call");
+
+		self::recordCall($fullName);
 	}
 
 
@@ -82,10 +83,8 @@ class FunctionMocks
 
 	public static function close() : void
 	{
-		foreach (self::$expected as $functionName => $expectedArgs) {
-			if (!isset(self::$called[$functionName])) {
-				Assert::fail("Function '{$functionName}' was expected, but not called");
-			}
+		foreach (self::$expected as $functionName => $expectations) {
+			Assert::same(count($expectations), self::$called[$functionName] ?? 0, "Expected number of calls of '{$functionName}' function");
 		}
 	}
 

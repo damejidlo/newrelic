@@ -41,6 +41,10 @@ class NewRelicExtensionTest extends DjTestCase
 		parent::setUp();
 
 		FunctionMocks::expect('newrelic_disable_autorum', []);
+		FunctionMocks::expect('newrelic_add_custom_tracer', ['Nette\Application\UI\Presenter::createRequest']);
+		FunctionMocks::expect('newrelic_add_custom_tracer', ['Nette\Application\UI\Presenter::run']);
+		FunctionMocks::expect('newrelic_add_custom_tracer', ['Nette\Application\Responses\TextResponse::send']);
+		FunctionMocks::expect('newrelic_add_custom_tracer', ['Doctrine\ORM\EntityManager::flush']);
 
 		$configurator = new Configurator();
 		$configurator->setTempDirectory(TEMP_DIR);

@@ -3,6 +3,9 @@ extensions:
 
 newrelic:
 	applicationName: testApplication
+	customTracers:
+		- 'Doctrine\ORM\EntityManager::flush'
+
 
 application:
     scanDirs: false

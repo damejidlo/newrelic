@@ -8,7 +8,7 @@
 		"php": ">=7.2",
 		"nette/application": "^2.4",
 		"nette/di": "^2.4.10",
-		"nette/utils": "^2.4"
+		"nette/utils": "^2.4.5"
 	},
 	"require-dev": {
 		"damejidlo/coding-standard": "^1.1.0",

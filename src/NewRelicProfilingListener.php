@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace Damejidlo\NewRelic;
 
 use Exception;
-use Kdyby\Events\Subscriber;
 use Nette\Application\Application;
 use Nette\Application\IResponse;
 use Nette\Application\Request;
@@ -14,7 +13,7 @@ use Nette\Utils\Strings;
 
 
 
-class NewRelicProfilingListener implements Subscriber
+class NewRelicProfilingListener
 {
 
 	use SmartObject;
@@ -46,21 +45,6 @@ class NewRelicProfilingListener implements Subscriber
 		$this->appUrl = $appUrl;
 		$this->container = $container;
 		$this->client = $client;
-	}
-
-
-
-	/**
-	 * @return string[]
-	 */
-	public function getSubscribedEvents() : array
-	{
-		return [
-			'Nette\\Application\\Application::onStartup',
-			'Nette\\Application\\Application::onShutdown',
-			'Nette\\Application\\Application::onRequest',
-			'Nette\\Application\\Application::onResponse',
-		];
 	}
 
 

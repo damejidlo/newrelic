@@ -6,7 +6,7 @@ namespace DamejidloTests\NewRelic\DI;
 require_once __DIR__ . '/../../bootstrap.php';
 
 use Damejidlo\NewRelic\Client;
-use Damejidlo\NewRelic\NewRelicProfilingListener;
+use Damejidlo\NewRelic\NetteProfilingListener;
 use DamejidloTests\DjTestCase;
 use DamejidloTests\FunctionMocks;
 use Nette\Configurator;
@@ -40,7 +40,7 @@ class NewRelicExtensionTest extends DjTestCase
 		$container = $this->configurator->createContainer();
 
 		Assert::type(Client::class, $container->getService('newrelic.client'));
-		Assert::type(NewRelicProfilingListener::class, $container->getService('newrelic.profilingListener'));
+		Assert::type(NetteProfilingListener::class, $container->getService('newrelic.profilingListener'));
 	}
 
 
@@ -55,7 +55,7 @@ class NewRelicExtensionTest extends DjTestCase
 		$container = $this->configurator->createContainer();
 
 		Assert::type(Client::class, $container->getService('newrelic.client'));
-		Assert::type(NewRelicProfilingListener::class, $container->getService('newrelic.profilingListener'));
+		Assert::type(NetteProfilingListener::class, $container->getService('newrelic.profilingListener'));
 	}
 
 

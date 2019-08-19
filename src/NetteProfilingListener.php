@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Damejidlo\NewRelic;
 
+use Damejidlo\NewRelic\TransactionName\NetteWebTransactionNameProvider;
 use Nette\Application\Application;
 use Nette\Application\IResponse;
 use Nette\Application\Request;
@@ -20,11 +21,17 @@ final class NetteProfilingListener
 	 */
 	private $client;
 
+	/**
+	 * @var NetteWebTransactionNameProvider
+	 */
+	private $netteWebTransactionNameProvider;
 
 
-	public function __construct(Client $client)
+
+	public function __construct(Client $client, NetteWebTransactionNameProvider $netteWebTransactionNameProvider)
 	{
 		$this->client = $client;
+		$this->netteWebTransactionNameProvider = $netteWebTransactionNameProvider;
 	}
 
 
@@ -60,7 +67,9 @@ final class NetteProfilingListener
 			'APP_STARTUP_TIME_FLOAT'
 		);
 
-		$this->handleRequest($request);
+		if (PHP_SAPI !== 'cli') {
+			$this->client->nameTransaction($this->netteWebTransactionNameProvider->getTransactionName($request));
+		}
 	}
 
 
@@ -85,55 +94,6 @@ final class NetteProfilingListener
 			'APP_SHUTDOWN_TIME_FLOAT',
 			'APP_RESPONSE_TIME_FLOAT'
 		);
-	}
-
-
-
-	private function resolveCliTransactionName() : string
-	{
-		return '$ ' . basename($_SERVER['argv'][0]) . ' ' . implode(' ', array_slice($_SERVER['argv'], 1));
-	}
-
-
-
-	/**
-	 * @param Request $request
-	 * @param string[] $params
-	 * @return string
-	 */
-	private function resolveTransactionName(Request $request, array $params) : string
-	{
-		return (
-			$request->getPresenterName()
-			. (isset($params['action']) ? ':' . $params['action'] : '')
-			. (isset($params['do']) ? '?signal=' . preg_replace('~[0-9]+~', '*', $params['do']) : '')
-		);
-	}
-
-
-
-	private function handleCliRequest() : void
-	{
-		$this->client->nameTransaction($this->resolveCliTransactionName());
-	}
-
-
-
-	private function handleWebRequest(Request $request) : void
-	{
-		$params = $request->getParameters() + $request->getPost();
-		$this->client->nameTransaction($this->resolveTransactionName($request, $params));
-	}
-
-
-
-	private function handleRequest(Request $request) : void
-	{
-		if (PHP_SAPI === 'cli') {
-			$this->handleCliRequest();
-		} else {
-			$this->handleWebRequest($request);
-		}
 	}
 
 }

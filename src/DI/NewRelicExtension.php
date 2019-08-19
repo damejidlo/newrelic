@@ -10,7 +10,7 @@ use Damejidlo\NewRelic\ApplicationName\ModuleNameResolver;
 use Damejidlo\NewRelic\ApplicationName\SimpleApplicationNameProvider;
 use Damejidlo\NewRelic\ApplicationName\WebApplicationModuleNameProvider;
 use Damejidlo\NewRelic\Client;
-use Damejidlo\NewRelic\NewRelicProfilingListener;
+use Damejidlo\NewRelic\NetteProfilingListener;
 use Damejidlo\NewRelic\Utils\PathUtils;
 use Nette\Application\Application;
 use Nette\DI\CompilerExtension;
@@ -95,8 +95,7 @@ class NewRelicExtension extends CompilerExtension
 			->setType(Client::class);
 
 		$containerBuilder->addDefinition($this->prefix('profilingListener'))
-			->setType(NewRelicProfilingListener::class)
-			->setArguments(['appUrl' => $config['applicationName']]);
+			->setType(NetteProfilingListener::class);
 	}
 
 

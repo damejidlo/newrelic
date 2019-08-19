@@ -162,17 +162,12 @@ class NewRelicProfilingListener
 	protected function handleCliRequest() : void
 	{
 		$this->client->nameTransaction($this->resolveCliTransactionName());
-		$this->client->backgroundJob(TRUE);
 	}
 
 
 
 	protected function handleWebRequest(Request $request) : void
 	{
-		$module = $this->getModule($request->getPresenterName());
-		if ($module === 'Cron') {
-			$this->client->backgroundJob(TRUE);
-		}
 		$params = $request->getParameters() + $request->getPost();
 		$this->transactionName = $this->resolveTransactionName($request, $params);
 		$this->client->nameTransaction($this->transactionName);

@@ -161,7 +161,6 @@ class NewRelicProfilingListener
 
 	protected function handleCliRequest() : void
 	{
-		$this->client->setAppname("{$this->appUrl}/Cron");
 		$this->client->nameTransaction($this->resolveCliTransactionName());
 		$this->client->backgroundJob(TRUE);
 	}
@@ -171,7 +170,6 @@ class NewRelicProfilingListener
 	protected function handleWebRequest(Request $request) : void
 	{
 		$module = $this->getModule($request->getPresenterName());
-		$this->client->setAppname($this->appUrl . ($module !== '' ? "/{$module}" : ''));
 		if ($module === 'Cron') {
 			$this->client->backgroundJob(TRUE);
 		}

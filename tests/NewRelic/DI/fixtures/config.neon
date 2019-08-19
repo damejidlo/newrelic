@@ -1,11 +1,27 @@
+parameters:
+	consoleMode: false
+
+
 extensions:
-    newrelic: Damejidlo\NewRelic\DI\NewRelicExtension
+    newrelic: Damejidlo\NewRelic\DI\NewRelicExtension(%consoleMode%)
+
 
 newrelic:
 	applicationName: testApplication
+	applicationModules:
+		web:
+			'/api/': Api
+			'': Front
 	customTracers:
 		- 'Doctrine\ORM\EntityManager::flush'
 
 
 application:
     scanDirs: false
+
+
+services:
+	http.request:
+		factory: Nette\Http\Request
+		arguments:
+			url: Nette\Http\UrlScript('https://damejidlo.cz/api/endpoint', '/')

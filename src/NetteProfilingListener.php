@@ -53,8 +53,6 @@ final class NetteProfilingListener
 			return;
 		}
 
-		$this->setCustomParametersToClient($request->getParameters());
-
 		$_ENV['APP_REQUEST_TIME_FLOAT'] = microtime(TRUE);
 		$this->client->customTimeMetricFromEnv(
 			'Nette/RequestTime',
@@ -110,20 +108,6 @@ final class NetteProfilingListener
 			. (isset($params['action']) ? ':' . $params['action'] : '')
 			. (isset($params['do']) ? '?signal=' . preg_replace('~[0-9]+~', '*', $params['do']) : '')
 		);
-	}
-
-
-
-	/**
-	 * @param mixed[] $params
-	 */
-	private function setCustomParametersToClient(array $params) : void
-	{
-		foreach ($params as $name => $value) {
-			if (is_scalar($value)) {
-				$this->client->addCustomParameter($name, $value);
-			}
-		}
 	}
 
 

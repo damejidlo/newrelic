@@ -48,6 +48,7 @@ class NewRelicExtensionTest extends DjTestCase
 	public function testConsoleRequest() : void
 	{
 		FunctionMocks::expect('newrelic_set_appname', ['testApplication/Console']);
+		FunctionMocks::expect('newrelic_background_job', [TRUE]);
 		FunctionMocks::expect('newrelic_disable_autorum', []);
 
 		$this->configurator->addConfig(__DIR__ . '/fixtures/config.console.neon');

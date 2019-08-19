@@ -122,6 +122,10 @@ class NewRelicExtension extends CompilerExtension
 			[$this->prefix('client'), IApplicationNameProvider::class]
 		);
 
+		if ($this->consoleMode) {
+			$initialize->addBody('$this->getService(?)->backgroundJob(TRUE);', [$this->prefix('client')]);
+		}
+
 		if (! (bool) $config['autorum']) {
 			$initialize->addBody('$this->getService(?)->disableAutorum();', [$this->prefix('client')]);
 		}

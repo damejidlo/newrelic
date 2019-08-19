@@ -10,7 +10,6 @@ use Damejidlo\NewRelic\NewRelicProfilingListener;
 use DamejidloTests\DjTestCase;
 use DamejidloTests\FunctionMocks;
 use Nette\Configurator;
-use Nette\DI\Container;
 use Tester\Assert;
 
 
@@ -22,16 +21,40 @@ class NewRelicExtensionTest extends DjTestCase
 {
 
 	/**
-	 * @var Container
+	 * @var Configurator
 	 */
-	private $container;
+	private $configurator;
 
 
 
-	public function testServices() : void
+	public function testWebRequest() : void
 	{
-		Assert::type(Client::class, $this->container->getService('newrelic.client'));
-		Assert::type(NewRelicProfilingListener::class, $this->container->getService('newrelic.profilingListener'));
+		FunctionMocks::expect('newrelic_set_appname', ['testApplication/Api']);
+		FunctionMocks::expect('newrelic_disable_autorum', []);
+		FunctionMocks::expect('newrelic_add_custom_tracer', ['Nette\Application\UI\Presenter::createRequest']);
+		FunctionMocks::expect('newrelic_add_custom_tracer', ['Nette\Application\UI\Presenter::run']);
+		FunctionMocks::expect('newrelic_add_custom_tracer', ['Nette\Application\Responses\TextResponse::send']);
+		FunctionMocks::expect('newrelic_add_custom_tracer', ['Doctrine\ORM\EntityManager::flush']);
+
+		$this->configurator->addConfig(__DIR__ . '/fixtures/config.neon');
+		$container = $this->configurator->createContainer();
+
+		Assert::type(Client::class, $container->getService('newrelic.client'));
+		Assert::type(NewRelicProfilingListener::class, $container->getService('newrelic.profilingListener'));
+	}
+
+
+
+	public function testConsoleRequest() : void
+	{
+		FunctionMocks::expect('newrelic_set_appname', ['testApplication/Console']);
+		FunctionMocks::expect('newrelic_disable_autorum', []);
+
+		$this->configurator->addConfig(__DIR__ . '/fixtures/config.console.neon');
+		$container = $this->configurator->createContainer();
+
+		Assert::type(Client::class, $container->getService('newrelic.client'));
+		Assert::type(NewRelicProfilingListener::class, $container->getService('newrelic.profilingListener'));
 	}
 
 
@@ -40,17 +63,9 @@ class NewRelicExtensionTest extends DjTestCase
 	{
 		parent::setUp();
 
-		FunctionMocks::expect('newrelic_disable_autorum', []);
-		FunctionMocks::expect('newrelic_add_custom_tracer', ['Nette\Application\UI\Presenter::createRequest']);
-		FunctionMocks::expect('newrelic_add_custom_tracer', ['Nette\Application\UI\Presenter::run']);
-		FunctionMocks::expect('newrelic_add_custom_tracer', ['Nette\Application\Responses\TextResponse::send']);
-		FunctionMocks::expect('newrelic_add_custom_tracer', ['Doctrine\ORM\EntityManager::flush']);
-
-		$configurator = new Configurator();
-		$configurator->setTempDirectory(TEMP_DIR);
-		$configurator->setDebugMode(FALSE);
-		$configurator->addConfig(__DIR__ . '/fixtures/config.neon');
-		$this->container = $configurator->createContainer();
+		$this->configurator = new Configurator();
+		$this->configurator->setTempDirectory(TEMP_DIR);
+		$this->configurator->setDebugMode(FALSE);
 	}
 
 }

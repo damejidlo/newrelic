@@ -1,0 +1,18 @@
+parameters:
+	consoleMode: true
+
+
+extensions:
+    newrelic: Damejidlo\NewRelic\DI\NewRelicExtension(%consoleMode%)
+
+
+newrelic:
+	applicationName: testApplication
+	applicationModules:
+		console:
+			'': Console
+	customTracers!: []
+
+
+application:
+    scanDirs: false

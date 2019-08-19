@@ -12,10 +12,18 @@ composer require damejidlo/newrelic
 Register `NewRelicExtension` in your config:
 ```yaml
 extensions:
-    newrelic: Damejidlo\NewRelic\DI\NewRelicExtension
+    newrelic: Damejidlo\NewRelic\DI\NewRelicExtension(%consoleMode%)
 
 newrelic:
 	applicationName: fooBar
+	applicationModules:
+		web:
+			'/api/': Api
+			'/admin/': Admin
+			'': Front
+		console:
+			'bin/foo.php ': Foo
+			'': Console
 	autorum: FALSE
 	customTracers:
 		- 'Doctrine\ORM\EntityManager::flush'

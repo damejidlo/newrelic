@@ -49,9 +49,11 @@ class NewRelicExtensionTest extends DjTestCase
 	{
 		FunctionMocks::expect('newrelic_set_appname', ['testApplication/Console']);
 		FunctionMocks::expect('newrelic_background_job', [TRUE]);
+		FunctionMocks::expect('newrelic_name_transaction', ['$ tests/NewRelic/DI/NewRelicExtensionTest.phpt --method=testConsoleRequest']);
 		FunctionMocks::expect('newrelic_disable_autorum', []);
 
 		$this->configurator->addConfig(__DIR__ . '/fixtures/config.console.neon');
+		$this->configurator->addParameters(['baseDir' => __DIR__ . '/../../..']);
 		$container = $this->configurator->createContainer();
 
 		Assert::type(Client::class, $container->getService('newrelic.client'));

@@ -16,3 +16,9 @@ newrelic:
 
 application:
     scanDirs: false
+
+
+services:
+	newrelic.pathUtils:
+		arguments:
+			baseDir: %baseDir%

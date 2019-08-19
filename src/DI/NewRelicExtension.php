@@ -11,6 +11,8 @@ use Damejidlo\NewRelic\ApplicationName\SimpleApplicationNameProvider;
 use Damejidlo\NewRelic\ApplicationName\WebApplicationModuleNameProvider;
 use Damejidlo\NewRelic\Client;
 use Damejidlo\NewRelic\NetteProfilingListener;
+use Damejidlo\NewRelic\TransactionName\ConsoleTransactionNameProvider;
+use Damejidlo\NewRelic\TransactionName\NetteWebTransactionNameProvider;
 use Damejidlo\NewRelic\Utils\PathUtils;
 use Nette\Application\Application;
 use Nette\DI\CompilerExtension;
@@ -91,6 +93,12 @@ class NewRelicExtension extends CompilerExtension
 			->setType(ModularApplicationNameProvider::class)
 			->setArguments(['applicationNameProvider' => $this->prefix('@simpleApplicationNameProvider')]);
 
+		$containerBuilder->addDefinition($this->prefix('consoleTransactionNameProvider'))
+			->setType(ConsoleTransactionNameProvider::class);
+
+		$containerBuilder->addDefinition($this->prefix('netteWebTransactionNameProvider'))
+			->setType(NetteWebTransactionNameProvider::class);
+
 		$containerBuilder->addDefinition($this->prefix('client'))
 			->setType(Client::class);
 
@@ -121,16 +129,20 @@ class NewRelicExtension extends CompilerExtension
 			[$this->prefix('client'), IApplicationNameProvider::class]
 		);
 
-		if ($this->consoleMode) {
-			$initialize->addBody('$this->getService(?)->backgroundJob(TRUE);', [$this->prefix('client')]);
-		}
-
 		if (! (bool) $config['autorum']) {
 			$initialize->addBody('$this->getService(?)->disableAutorum();', [$this->prefix('client')]);
 		}
 
 		foreach ($config['customTracers'] as $functionName) {
 			$initialize->addBody('$this->getService(?)->addCustomTracer(?);', [$this->prefix('client'), $functionName]);
+		}
+
+		if ($this->consoleMode) {
+			$initialize->addBody('$this->getService(?)->backgroundJob(TRUE);', [$this->prefix('client')]);
+			$initialize->addBody(
+				'$this->getService(?)->nameTransaction($this->getByType(?)->getTransactionName());',
+				[$this->prefix('client'), ConsoleTransactionNameProvider::class]
+			);
 		}
 	}
 

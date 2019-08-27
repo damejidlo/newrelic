@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Damejidlo\NewRelic;
 
+use Damejidlo\NewRelic\Events\ICustomEvent;
 use Nette\SmartObject;
 use Nette\Utils\Strings;
 
@@ -31,6 +32,13 @@ class Client
 
 	use SmartObject {
 		__call as traitCall;
+	}
+
+
+
+	public function customEvent(ICustomEvent $event) : void
+	{
+		$this->__call('recordCustomEvent', [$event->getName(), $event->getAttributes()]);
 	}
 
 

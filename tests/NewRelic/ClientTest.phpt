@@ -8,6 +8,7 @@ require_once __DIR__ . '/../bootstrap.php';
 use Damejidlo\NewRelic\Client;
 use DamejidloTests\DjTestCase;
 use DamejidloTests\FunctionMocks;
+use DamejidloTests\NewRelic\Events\DummyEvent;
 use Tester\Assert;
 
 
@@ -28,6 +29,23 @@ class ClientTest extends DjTestCase
 		Assert::noError(
 			function () use ($client, $args) : void {
 				$client->addCustomParameter(...$args);
+			}
+		);
+	}
+
+
+
+	public function testCustomEvent() : void
+	{
+		$attributes = ['foo' => 'bar', 'answer' => 42];
+		FunctionMocks::expect('newrelic_record_custom_event', ['DummyEvent', $attributes]);
+
+		$client = new Client();
+
+		$event = new DummyEvent($attributes);
+		Assert::noError(
+			function () use ($client, $event) : void {
+				$client->customEvent($event);
 			}
 		);
 	}

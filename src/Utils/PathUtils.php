@@ -25,7 +25,7 @@ class PathUtils
 
 
 
-	public function __construct(string $baseDir = __DIR__ . '/../../../..')
+	public function __construct(string $baseDir = __DIR__ . '/../../../../..')
 	{
 		$this->baseDir = $baseDir;
 	}
